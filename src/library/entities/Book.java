@@ -151,7 +151,14 @@ public class Book implements IBook
 
     @Override
     public void repair() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (eBookState_ == eBookState_.DAMAGED)
+        {
+            eBookState_ = eBookState_.AVAILABLE;
+        }
+        else
+        {
+            throw new RuntimeException("The book was not damaged.");
+        }
     }
 
     @Override
