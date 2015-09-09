@@ -19,6 +19,7 @@ public class Book implements IBook
     private String callNumber_;
     private int bookId_;
     private ILoan loanAssociated_;
+    private EBookState eBookState_;
     
     /**
      * Default constructor for book. Throws IllegalArgumentException if any of
@@ -70,18 +71,21 @@ public class Book implements IBook
         {
             bookId_ = bookId;
         }
+        
+        eBookState_ = eBookState_.AVAILABLE;
     }
     
     @Override
     /**
      * Allows a book to be borrowed by a particular Loan object. The book first
-     * checks its present status and if it OK to be borrowed then the book
+     * checks its present status and if it is AVAILABLE then the book
      * is allowed to be borrowed by the loan.
      */
     public void borrow(ILoan loanAssociated) {
-        if (loanAssociated == null)
+        if (eBookState_ == eBookState_.AVAILABLE && loanAssociated_ == null)
         {
-            loanAssociated_ = loanAssociated;
+            loanAssociated_ = loanAssociated; // Associates the loan
+            eBookState_ = eBookState_.ON_LOAN; // Sets the book status to on loan.
         }
         else
         {
@@ -91,7 +95,14 @@ public class Book implements IBook
 
     @Override
     public ILoan getLoan() {
-        return loanAssociated_;
+        if (eBookState_ == eBookState_.ON_LOAN)
+        {
+            return loanAssociated_;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     @Override
