@@ -49,31 +49,31 @@ public class BookTest {
     public void tearDown() {
     }
 
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testBookConstructor1()
     {
         Book book = new Book("", "error", "error", 47);
     }
     
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testBookConstructor2()
     {
         Book book = new Book("Error", "", "error", 46);
     }
     
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testBookConstructor3()
     {
         Book book = new Book("Error", "Error", "", 45);
     }
     
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testBookConstructor4()
     {
         Book book = new Book("Error", "Error", "Error", 0);
     }
     
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testBookConstructor5()
     {
         Book book = new Book("Error", "error", "error", -127);
