@@ -185,31 +185,43 @@ public class Book implements IBook
     }
 
     @Override
-    /** Returns the current state of the book.
-     * 
+    /**
+     * Returns the current state of the book.
      */
     public EBookState getState() {
         return eBookState_;
     }
 
     @Override
+    /**
+     * Returns the author of the book.
+     */
     public String getAuthor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return author_;
     }
 
     @Override
+    /**
+     * Returns the title of the book.
+     */
     public String getTitle() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return title_;
     }
 
     @Override
+    /**
+     * Returns the call number of the book.
+     */
     public String getCallNumber() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return callNumber_;
     }
 
     @Override
+    /**
+     * Returns the ID of the book.
+     */
     public int getID() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return bookId_;
     }
     
 }
