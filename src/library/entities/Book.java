@@ -14,10 +14,10 @@ import library.interfaces.entities.ILoan;
  */
 public class Book implements IBook
 {
-    private String author_;
-    private String title_;
-    private String callNumber_;
-    private int bookId_;
+    private final String author_;
+    private final String title_;
+    private final String callNumber_;
+    private final int bookId_;
     private ILoan loanAssociated_;
     private EBookState eBookState_;
     
@@ -94,6 +94,10 @@ public class Book implements IBook
     }
 
     @Override
+    /**
+     * Returns the associated loan object with this book. If the book isnt
+     * presently on loan then null is returned.
+     */
     public ILoan getLoan() {
         if (eBookState_ == eBookState_.ON_LOAN)
         {
@@ -106,8 +110,28 @@ public class Book implements IBook
     }
 
     @Override
+    /**
+     * Return book allows a book to be returned from a loan. If the book is
+     * damanged, then the book is put into the DAMAGED state, otherwise it 
+     * is AVAILABLE.
+     */
     public void returnBook(boolean damaged) {
-        
+        if (eBookState_ == eBookState_.ON_LOAN)
+        {
+            if (damaged)
+            {
+                eBookState_ = eBookState_.DAMAGED;
+            }
+            else
+            {
+                eBookState_ = eBookState_.AVAILABLE;
+                loanAssociated_ = null;
+            }
+        }
+        else
+        {
+            throw new RuntimeException("This book was not presently on loan.");
+        }
     }
 
     @Override
