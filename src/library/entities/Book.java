@@ -165,6 +165,10 @@ public class Book implements IBook
     }
 
     @Override
+    /**
+     * If the book is damaged, lost, or available and we choose to remove it
+     * we can.
+     */
     public void dispose() {
         if (eBookState_ == eBookState_.AVAILABLE || eBookState_ == 
                 eBookState_.LOST || eBookState_ == eBookState_.DAMAGED)
@@ -181,8 +185,11 @@ public class Book implements IBook
     }
 
     @Override
+    /** Returns the current state of the book.
+     * 
+     */
     public EBookState getState() {
-
+        return eBookState_;
     }
 
     @Override
