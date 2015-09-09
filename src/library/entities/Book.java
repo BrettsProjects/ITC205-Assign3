@@ -135,8 +135,18 @@ public class Book implements IBook
     }
 
     @Override
+    /**
+     * If the book is lost whilst on loan, then it may be set to LOST.
+     */
     public void lose() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (eBookState_ == eBookState_.ON_LOAN)
+        {
+            eBookState_ = eBookState_.LOST;
+        }
+        else
+        {
+            throw new RuntimeException("The book was not on loan.");
+        }
     }
 
     @Override
