@@ -20,6 +20,18 @@ public class Book implements IBook
     private int bookId_;
     private ILoan loanAssociated_;
     
+    /**
+     * Default constructor for book. Throws IllegalArgumentException if any of
+     * parameters are invalid. i.e. objects are null OR bookId is less than or
+     * equal to 0.
+     * 
+     * @param author
+     * @param title
+     * @param callNumber
+     * @param bookId
+     * 
+     * @throws IllegalArgumentException 
+     */
     public Book(String author, String title, String callNumber, int bookId)
             throws IllegalArgumentException
     {
@@ -61,6 +73,11 @@ public class Book implements IBook
     }
     
     @Override
+    /**
+     * Allows a book to be borrowed by a particular Loan object. The book first
+     * checks its present status and if it OK to be borrowed then the book
+     * is allowed to be borrowed by the loan.
+     */
     public void borrow(ILoan loanAssociated) {
         if (loanAssociated == null)
         {
