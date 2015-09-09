@@ -38,7 +38,7 @@ public class Book implements IBook
     {
         if (author == null || author.isEmpty())
         {
-            throw new IllegalArgumentException("Author cannot be null.");
+            throw new IllegalArgumentException("Author cannot be null or empty string.");
         }
         else
         {
@@ -47,7 +47,7 @@ public class Book implements IBook
         
         if (title == null || title.isEmpty())
         {
-            throw new IllegalArgumentException("Title cannot be null.");
+            throw new IllegalArgumentException("Title cannot be null or empty string.");
         }
         else
         {
@@ -56,7 +56,7 @@ public class Book implements IBook
         
         if (callNumber == null || callNumber.isEmpty())
         {
-            throw new IllegalArgumentException("Call Number cannot be null.");
+            throw new IllegalArgumentException("Call Number cannot be null or empty string.");
         }
         else
         {

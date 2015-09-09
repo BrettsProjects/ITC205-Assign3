@@ -50,13 +50,33 @@ public class BookTest {
     }
 
     @Test
-    public void checkBookConstructor()
+    public void testBookConstructor1()
     {
         Book book = new Book("", "error", "error", 47);
-        book = new Book("Error", "", "error", 46);
-        book = new Book("Error", "Error", "", 45);
-        book = new Book("Error", "Error", "Error", 0);
-        book = new Book("Error", "error", "error", -127);
+    }
+    
+    @Test
+    public void testBookConstructor2()
+    {
+        Book book = new Book("Error", "", "error", 46);
+    }
+    
+    @Test
+    public void testBookConstructor3()
+    {
+        Book book = new Book("Error", "Error", "", 45);
+    }
+    
+    @Test
+    public void testBookConstructor4()
+    {
+        Book book = new Book("Error", "Error", "Error", 0);
+    }
+    
+    @Test
+    public void testBookConstructor5()
+    {
+        Book book = new Book("Error", "error", "error", -127);
     }
     
     /**
