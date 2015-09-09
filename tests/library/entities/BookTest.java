@@ -20,8 +20,14 @@ import static org.junit.Assert.*;
  */
 public class BookTest {
     
+    private Book myBook1_;
+    private Book myBook2_;
+    private Book myBook3_;
+    private Book myBook4_;
+    
     public BookTest() {
     }
+    
     
     @BeforeClass
     public static void setUpClass() {
@@ -33,12 +39,26 @@ public class BookTest {
     
     @Before
     public void setUp() {
+        myBook1_ = new Book("BookAuthor", "BookName", "CallNumberString", 50); //Valid Books for the tests below.
+        myBook2_ = new Book ("NullBooks", "Nulls", "ADE123", 49);
+        myBook3_ = new Book ("Captcha", "Captcha", "Captcha", 48);
+        myBook4_ = new Book ("Another", "another", "OTHER", 47);
     }
     
     @After
     public void tearDown() {
     }
 
+    @Test
+    public void checkBookConstructor()
+    {
+        Book book = new Book("", "error", "error", 47);
+        book = new Book("Error", "", "error", 46);
+        book = new Book("Error", "Error", "", 45);
+        book = new Book("Error", "Error", "Error", 0);
+        book = new Book("Error", "error", "error", -127);
+    }
+    
     /**
      * Test of borrow method, of class Book.
      */
