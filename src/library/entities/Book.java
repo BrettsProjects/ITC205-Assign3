@@ -150,6 +150,9 @@ public class Book implements IBook
     }
 
     @Override
+    /**
+     * If the book is damaged, then it may be set to AVAILABLE.
+     */
     public void repair() {
         if (eBookState_ == eBookState_.DAMAGED)
         {
@@ -163,12 +166,23 @@ public class Book implements IBook
 
     @Override
     public void dispose() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (eBookState_ == eBookState_.AVAILABLE || eBookState_ == 
+                eBookState_.LOST || eBookState_ == eBookState_.DAMAGED)
+            // If the book is AVAILABLE, LOST, DAMAGED then we may dispose of
+            // it.
+        {
+            eBookState_ = eBookState_.DISPOSED;
+        }
+        else
+        {
+            throw new RuntimeException("The book was not in a state to be" +
+                    " disposed.");
+        }
     }
 
     @Override
     public EBookState getState() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     @Override
