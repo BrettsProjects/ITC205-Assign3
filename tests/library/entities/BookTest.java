@@ -191,13 +191,65 @@ public class BookTest {
     }
     
     
-    // NOTE: NEED TO ENSURE THAT THE LOAN RETURNS TEH LOAN WHEN THE BOOK
-    // IS IN OTHER STATES!!!!
+    /**
+     * Asserts that the loan object is still returned when the book is lost
+     * whilst on loan.
+     */
+    @Test
+    public void testGetLoanShouldReturnLoanWhenLost()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        Loan loan = new Loan();
+        book.borrow(loan);
+        book.lose();
+        assertTrue(book.getLoan() != loan);
+    }
+    
+    /**
+     * Asserts that the loan object is null when the book is damaged.
+     */
+    @Test
+    public void testGetLoanShouldBeNullWhenDamaged()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        Loan loan = new Loan();
+        book.borrow(loan);
+        book.returnBook(true);
+        assertTrue(book.getLoan() == null);
+    }
+    
+    /**
+     * Asserts that the loan object is null when the book was in the available
+     * or damaged before it was disposed. This comment applies to the next
+     * two successive tests.
+     */
+    @Test
+    public void testGetLoanShouldBeNullWhenAvailableThenDisposed()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.dispose();
+        assertTrue(book.getLoan() == null);
+    }
     
     @Test
-    public void testGetLoanShouldReturnLoan()
+    public void testGetLoanShouldBeNullWhenDamagedthenDisposed()
     {
-        
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        Loan loan = new Loan();
+        book.borrow(loan);
+        book.returnBook(true);
+        book.dispose();
+        assertTrue(book.getLoan() == null);
+    }
+    
+    @Test
+    public void testGetLoanShouldntBeNullWhenLost()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        Loan loan = new Loan();
+        book.borrow(loan);
+        book.lose();
+        assertTrue(book.getLoan().equals(loan));
     }
 
     /**
