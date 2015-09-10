@@ -20,6 +20,8 @@ import static org.junit.Assert.*;
  */
 public class BookTest {
     
+    private EBookState eBookState_;
+    
     public BookTest() {
     }
     
@@ -71,17 +73,16 @@ public class BookTest {
     }
     
     /**
-     * Ensures that a book that is available can be borrowed.
+     * Ensures that a book that is AVAILABLE can be borrowed and that its state
+     * then changes to ON_LOAN.
      */
     @Test
     public void testBorrowAvailable() {
         System.out.println("Borrow: Book is AVAILABLE test.");
-        Loan loan = new Loan();
-        // System.out.println(loan.toString() + " was used to borrow.");
         Book book = new Book("Available", "Available", "Available", 10);
-        book.borrow(loan);
-        // System.out.println(book.getLoan().toString() + " was returned by book.");
-        assertTrue(loan.equals(book.getLoan()));
+        assertTrue(book.getState() == eBookState_.AVAILABLE);
+        book.borrow(new Loan());
+        assertTrue(book.getState() == eBookState_.ON_LOAN);
     }
     
     /**
@@ -167,6 +168,9 @@ public class BookTest {
      * and has not been lost or damaged.
      */
     
+    /**
+     * Ensures that the book returns the correct loan object
+     */
     
     // NOTE: NEED TO ENSURE THAT THE LOAN RETURNS TEH LOAN WHEN THE BOOK
     // IS IN OTHER STATES!!!!
