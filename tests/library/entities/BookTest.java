@@ -20,11 +20,6 @@ import static org.junit.Assert.*;
  */
 public class BookTest {
     
-    private Book myBook1_;
-    private Book myBook2_;
-    private Book myBook3_;
-    private Book myBook4_;
-    
     public BookTest() {
     }
     
@@ -39,10 +34,6 @@ public class BookTest {
     
     @Before
     public void setUp() {
-        myBook1_ = new Book("BookAuthor", "BookName", "CallNumberString", 50); //Valid Books for the tests below.
-        myBook2_ = new Book ("NullBooks", "Nulls", "ADE123", 49);
-        myBook3_ = new Book ("Captcha", "Captcha", "Captcha", 48);
-        myBook4_ = new Book ("Another", "another", "OTHER", 47);
     }
     
     @After
@@ -80,16 +71,18 @@ public class BookTest {
     }
     
     /**
-     * Test of borrow method, of class Book.
+     * Test of borrow method, of class Book. Borrow confirms a book that is
+     * AVAILABLE can be borrowed.
      */
     @Test
-    public void testBorrow() {
-        System.out.println("borrow");
-        ILoan loanAssociated = null;
-        Book instance = null;
-        instance.borrow(loanAssociated);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testBorrow1() {
+        System.out.println("Borrow: Book is available test.");
+        Loan loan = new Loan();
+        System.out.println(loan.toString() + " was used to borrow.");
+        Book book = new Book("Available", "Available", "Available", 10);
+        book.borrow(loan);
+        System.out.println(book.getLoan().toString() + " was returned by book.");
+        assertTrue(loan.equals(book.getLoan()));
     }
 
     /**
