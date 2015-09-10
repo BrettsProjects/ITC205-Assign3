@@ -152,7 +152,9 @@ public class BookTest {
     
     /**
      * This test ensures that a borrowed book returns null when it has been
-     * returned and is no longer associated with a loan.
+     * returned and is no longer associated with a loan. This test and the 
+     * testGetLoanShouldBeNull() method ensure that an AVAILABLE book returns
+     * null.
      */
     @Test
     public void testGetLoanShouldBeNullAfterBorrowedAndReturned()
@@ -165,14 +167,16 @@ public class BookTest {
     
     /**
      * Ensures that the correct loan is returned after a book has been borrowed
-     * and has not been lost or damaged.
+     * and has not been lost or damaged. This ensures that when the book is
+     * ON_LOAN, the correct loan is returned.
      */
     @Test
     public void testBookOnLoanReturnsCorrectLoan()
     {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        
-        book.borrow(null);
+        Loan loan = new Loan();
+        book.borrow(loan);
+        assertTrue(book.getLoan().equals(loan));
     }
     
     /**
@@ -186,9 +190,6 @@ public class BookTest {
         book.borrow(null);
     }
     
-    /**
-     * Ensures that the book returns the correct loan object
-     */
     
     // NOTE: NEED TO ENSURE THAT THE LOAN RETURNS TEH LOAN WHEN THE BOOK
     // IS IN OTHER STATES!!!!
