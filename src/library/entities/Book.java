@@ -82,7 +82,11 @@ public class Book implements IBook
      * is allowed to be borrowed by the loan.
      */
     public void borrow(ILoan loanAssociated) {
-        if (eBookState_ == eBookState_.AVAILABLE && loanAssociated_ == null)
+        if (loanAssociated == null)
+        {
+            throw new RuntimeException("The associated loan cannot be null.");
+        }
+        else if (eBookState_ == eBookState_.AVAILABLE && loanAssociated_ == null)
         {
             loanAssociated_ = loanAssociated; // Associates the loan
             eBookState_ = eBookState_.ON_LOAN; // Sets the book status to on loan.

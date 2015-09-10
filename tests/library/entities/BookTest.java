@@ -167,6 +167,24 @@ public class BookTest {
      * Ensures that the correct loan is returned after a book has been borrowed
      * and has not been lost or damaged.
      */
+    @Test
+    public void testBookOnLoanReturnsCorrectLoan()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        
+        book.borrow(null);
+    }
+    
+    /**
+     * Ensures that a null loan object cannot be passed into the book as a valid
+     * loan.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testBookLoanCannotBeNull()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(null);
+    }
     
     /**
      * Ensures that the book returns the correct loan object
