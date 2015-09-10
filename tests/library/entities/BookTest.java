@@ -71,32 +71,110 @@ public class BookTest {
     }
     
     /**
-     * Test of borrow method, of class Book. Borrow confirms a book that is
-     * AVAILABLE can be borrowed.
+     * Ensures that a book that is available can be borrowed.
      */
     @Test
-    public void testBorrow1() {
-        System.out.println("Borrow: Book is available test.");
+    public void testBorrowAvailable() {
+        System.out.println("Borrow: Book is AVAILABLE test.");
         Loan loan = new Loan();
-        System.out.println(loan.toString() + " was used to borrow.");
+        // System.out.println(loan.toString() + " was used to borrow.");
         Book book = new Book("Available", "Available", "Available", 10);
         book.borrow(loan);
-        System.out.println(book.getLoan().toString() + " was returned by book.");
+        // System.out.println(book.getLoan().toString() + " was returned by book.");
         assertTrue(loan.equals(book.getLoan()));
+    }
+    
+    /**
+     * Ensures that a book that is presently on loan cannot be borrowed.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testBorrowOnLoan()
+    {
+        System.out.println("Borrow: Book is ON LOAN test.");
+        Loan loan = new Loan();
+        Loan otherLoan = new Loan();
+        Book book = new Book("Available", "Available", "Available", 10);
+        book.borrow(loan); //Book is now on Loan.
+        book.borrow(otherLoan);
+    }
+    
+    /**
+     * Ensures that a damaged book cannot be borrowed.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testBorrowDamaged()
+    {
+        System.out.println("Borrow: Book is DAMAGED test.");
+        Loan loan = new Loan();
+        Loan otherLoan = new Loan();
+        Book book = new Book("Available", "Available", "Available", 10);
+        book.borrow(loan); // Book is now on Loan.
+        book.returnBook(true); // Book is now damaged.
+        book.borrow(otherLoan);
+    }
+    
+    /**
+     * Ensures that a lost book cannot be borrowed.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testBorrowLost()
+    {
+        Loan loan = new Loan();
+        System.out.println("Borrow: Book is LOST test.");
+        Book book = new Book("Available", "Available", "Available", 10);
+        book.lose();
+        book.borrow(loan);
+    }
+    
+    /**
+     * Ensures that a disposed book cannot be borrowed.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testBorrowDisposed()
+    {
+        Loan loan = new Loan();
+        System.out.println("Borrow: Book is DISPOSED test.");
+        Book book = new Book("Available", "Available", "Available", 10);
+        book.dispose();
+        book.borrow(loan);
     }
 
     /**
-     * Test of getLoan method, of class Book.
+     * Ensure that a new book object returns null as it is not associated with
+     * a loan.
      */
     @Test
-    public void testGetLoan() {
-        System.out.println("getLoan");
-        Book instance = null;
-        ILoan expResult = null;
-        ILoan result = instance.getLoan();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testGetLoanShouldBeNull() {
+        Book book = new Book("Available", "Available", "Available", 20);
+        assertTrue(book.getLoan() == null);
+    }
+    
+    /**
+     * This test ensures that a borrowed book returns null when it has been
+     * returned and is no longer associated with a loan.
+     */
+    @Test
+    public void testGetLoanShouldBeNullAfterBorrowedAndReturned()
+    {
+        Book book = new Book("Available", "Available", "Available", 20);
+        book.borrow(new Loan());
+        book.returnBook(false);
+        assertTrue(book.getLoan() == null);
+    }
+    
+    /**
+     * Ensures that the correct loan is returned after a book has been borrowed
+     * and has not been lost or damaged.
+     */
+    
+    
+    // NOTE: NEED TO ENSURE THAT THE LOAN RETURNS TEH LOAN WHEN THE BOOK
+    // IS IN OTHER STATES!!!!
+    
+    @Test
+    public void testGetLoanShouldReturnLoan()
+    {
+        
     }
 
     /**
