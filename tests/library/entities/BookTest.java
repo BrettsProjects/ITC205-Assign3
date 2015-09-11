@@ -360,17 +360,54 @@ public class BookTest {
     }
 
     /**
-     * Test of getState method, of class Book.
+     * Test of getState method, of class Book. Ensures that the corect state
+     * is returned by book for each of the state transitions.
      */
     @Test
     public void testGetState() {
-        System.out.println("getState");
-        Book instance = null;
-        EBookState expResult = null;
-        EBookState result = instance.getState();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.dispose();
+        assertTrue(book.getState().equals(eBookState_.DISPOSED));
+        
+        book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        assertTrue(book.getState().equals(eBookState_.ON_LOAN));
+        
+        book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.returnBook(true);
+        assertTrue(book.getState().equals(eBookState_.DAMAGED));
+        
+        book = new Book("MyBook", "MyBook", "MyBook", 100);
+        assertTrue(book.getState() == eBookState_.AVAILABLE);
+        
+        book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.returnBook(false);
+        assertTrue(book.getState() == eBookState_.AVAILABLE);
+        
+        book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.lose();
+        assertTrue(book.getState() == eBookState_.LOST);
+        
+        book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.lose();
+        book.dispose();
+        assertTrue(book.getState() == eBookState_.DISPOSED);
+        
+        book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.returnBook(true);
+        book.repair();
+        assertTrue(book.getState().equals(eBookState_.AVAILABLE));
+        
+        book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.returnBook(true);
+        book.dispose();
+        assertTrue(book.getState().equals(eBookState_.DISPOSED));
     }
 
     /**
