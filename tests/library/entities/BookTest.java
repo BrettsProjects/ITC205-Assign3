@@ -245,24 +245,18 @@ public class BookTest {
     }
     
     /**
-     * Test ensures that the loan is still associated to a lost book so the
-     * system knows which loan the book was lost on.
+     * Test ensures that no loan object is associated when the book calls
+     * getLoan after it is lost. This is inline with the specs whcih say
+     * getLoan should return null if the book isnt currently ON_LOAN.
      */
     @Test
-    public void testGetLoanShouldntBeNullWhenLost()
+    public void testGetLoanShouldBeNullWhenLost()
     {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
         Loan loan = new Loan();
-        loan.setInputString("Hello Tester");
         book.borrow(loan);
         book.lose();
-        Loan returnedLoan = (Loan) book.getLoan();
-        if (returnedLoan == null)
-        {
-            System.out.println("The loan object being returned is null.");
-            fail();
-        }
-        assertTrue(returnedLoan.getInputString().equals("Hello Tester"));
+        assertTrue(book.getLoan() == null);
     }
 
     /**
@@ -456,7 +450,7 @@ public class BookTest {
     {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
         book.borrow(new Loan());
-        book.lose();
+        book.dispose();
     }
     
     /**

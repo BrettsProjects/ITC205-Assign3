@@ -146,6 +146,7 @@ public class Book implements IBook
         if (eBookState_ == eBookState_.ON_LOAN)
         {
             eBookState_ = eBookState_.LOST;
+            loanAssociated_ = null;
         }
         else
         {
