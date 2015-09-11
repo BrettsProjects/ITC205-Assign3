@@ -327,15 +327,25 @@ public class BookTest {
     
 
     /**
-     * Test of dispose method, of class Book.
+     * Test of disposal of a book which is AVAILABLE, DAMAGED, or LOST
      */
     @Test
     public void testDispose() {
-        System.out.println("dispose");
-        Book instance = null;
-        instance.dispose();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.returnBook(true);
+        book.dispose();
+        assertTrue(book.getState() == eBookState_.DISPOSED);
+        
+        book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.dispose();
+        assertTrue(book.getState() == eBookState_.DISPOSED);
+        
+        book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.lose();
+        book.dispose();
+        assertTrue(book.getState() == eBookState_.DISPOSED);
     }
 
     /**
