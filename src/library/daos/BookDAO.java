@@ -48,7 +48,7 @@ public class BookDAO implements IBookDAO {
     public IBook getBookByID(int id) {
         try
         {
-            return bookList_.get(id);
+            return bookList_.get(id - 1);
         }
         catch (IndexOutOfBoundsException e)
         {

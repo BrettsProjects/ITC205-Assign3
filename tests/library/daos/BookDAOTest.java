@@ -73,32 +73,62 @@ public class BookDAOTest {
     }
 
     /**
+     * Ensures that adding an invalid book throws a runtime exception.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testAddInvalidBook()
+    {
+        BookDAO instance = new BookDAO(new BookHelper());
+        instance.addBook("Author", "Title", "");
+    }
+    
+    /**
+     * Ensures that adding an invalid book throws a runtime exception.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testAddInvalidBook2()
+    {
+        BookDAO instance = new BookDAO(new BookHelper());
+        instance.addBook(null, "Title", "");
+    }
+    
+    /**
      * Test of getBookByID method, of class BookDAO.
      */
     @Test
     public void testGetBookByID() {
-        System.out.println("getBookByID");
-        int id = 0;
-        BookDAO instance = null;
-        IBook expResult = null;
-        IBook result = instance.getBookByID(id);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        BookDAO instance = new BookDAO(new BookHelper());
+        instance.addBook("Author", "Title", "CallNumber");
+        instance.addBook("OtherAuthor", "Title", "CallNumber");
+        instance.addBook("Author", "OtherTitle", "CallNumber");
+        assertTrue(instance.getBookByID(1).getAuthor().equals("Author") && instance.getBookByID(1).getTitle().equals("Title"));
+        assertTrue(instance.getBookByID(2).getAuthor().equals("OtherAuthor") && instance.getBookByID(2).getTitle().equals("Title"));
+        assertTrue(instance.getBookByID(3).getAuthor().equals("Author") && instance.getBookByID(3).getTitle().equals("OtherTitle"));
     }
 
     /**
-     * Test of listBooks method, of class BookDAO.
+     * Test of listBooks method, ensuring that the list contains the added
+     * number of members.
      */
     @Test
     public void testListBooks() {
-        System.out.println("listBooks");
-        BookDAO instance = null;
-        List<IBook> expResult = null;
-        List<IBook> result = instance.listBooks();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        BookDAO instance = new BookDAO(new BookHelper());
+        instance.addBook("Author", "Title", "CallNumber");
+        instance.addBook("OtherAuthor", "Title", "CallNumber");
+        instance.addBook("Author", "OtherTitle", "CallNumber");
+        
+        assertTrue(instance.listBooks().size() == 3);
+    }
+    
+    /**
+     * Test of listBooks method, ensuring that the list returned contains no
+     * members.
+     */
+    @Test
+    public void testListBooksNothingInList() {
+        BookDAO instance = new BookDAO(new BookHelper());
+        
+        assertTrue(instance.listBooks().size() == 0);
     }
 
     /**
