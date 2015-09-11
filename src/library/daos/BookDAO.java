@@ -5,6 +5,7 @@
  */
 package library.daos;
 
+import java.util.ArrayList;
 import java.util.List;
 import library.interfaces.daos.IBookDAO;
 import library.interfaces.daos.IBookHelper;
@@ -18,6 +19,7 @@ public class BookDAO implements IBookDAO {
     
     private IBookHelper iBookHelper_;
     private int currentBookCount_;
+    private List<IBook> bookList_;
     
     public BookDAO(IBookHelper helper)
     {
@@ -29,37 +31,76 @@ public class BookDAO implements IBookDAO {
         else
         {
             iBookHelper_ = helper;
+            bookList_ = new ArrayList<>();
+            currentBookCount_ = 0;
         }
     }
 
     @Override
     public IBook addBook(String author, String title, String callNo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        IBook newBook = iBookHelper_.makeBook(author, title, callNo, currentBookCount_);
+        bookList_.add(newBook);
+        currentBookCount_++;
+        return newBook;
     }
 
     @Override
     public IBook getBookByID(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try
+        {
+            return bookList_.get(id);
+        }
+        catch (IndexOutOfBoundsException e)
+        {
+            return null;
+        }
     }
 
     @Override
     public List<IBook> listBooks() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return bookList_;
     }
 
     @Override
-    public List<IBook> findBooksByAuthor(String author) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<IBook> findBooksByAuthor(String author) {  
+        ArrayList<IBook> returnList = new ArrayList<>();
+        for (IBook book : bookList_)
+        {
+            if (book.getAuthor().equals(author))
+            {
+                returnList.add(book);
+            }
+        }
+        
+        return returnList;
     }
 
     @Override
     public List<IBook> findBooksByTitle(String title) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<IBook> returnList = new ArrayList<>();
+        for (IBook book : bookList_)
+        {
+            if (book.getTitle().equals(title))
+            {
+                returnList.add(book);
+            }
+        }
+        
+        return returnList;
     }
 
     @Override
     public List<IBook> findBooksByAuthorTitle(String author, String title) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<IBook> returnList = new ArrayList<>();
+        for (IBook book : bookList_)
+        {
+            if (book.getAuthor().equals(author) && book.getTitle().equals(title))
+            {
+                returnList.add(book);
+            }
+        }
+        
+        return returnList;
     }
     
 }
