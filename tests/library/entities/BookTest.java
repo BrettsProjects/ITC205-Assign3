@@ -257,14 +257,29 @@ public class BookTest {
      */
     @Test
     public void testReturnBook() {
-        System.out.println("returnBook");
-        boolean damaged = false;
-        Book instance = null;
-        instance.returnBook(damaged);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.returnBook(false);
+        assertTrue(book.getState() == eBookState_.AVAILABLE);
     }
-
+    
+    @Test
+    public void testReturnDamagedBook() {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.returnBook(true);
+        assertTrue(book.getState() == eBookState_.DAMAGED);
+    }
+    
+    /**
+     * Test ensures that the book that is available cannot be returned.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testBookThatIsAvailable()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.returnBook(false);
+    }
     /**
      * Test of lose method, of class Book.
      */
