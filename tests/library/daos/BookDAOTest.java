@@ -70,6 +70,7 @@ public class BookDAOTest {
         
         assertTrue(instance.findBooksByAuthor("Author").size() == 2);
         assertTrue(instance.findBooksByAuthor("OtherAuthor").size() == 1);
+        assertTrue(instance.listBooks().size() == 3);
     }
 
     /**
@@ -127,7 +128,6 @@ public class BookDAOTest {
     @Test
     public void testListBooksNothingInList() {
         BookDAO instance = new BookDAO(new BookHelper());
-        
         assertTrue(instance.listBooks().size() == 0);
     }
 
@@ -136,14 +136,15 @@ public class BookDAOTest {
      */
     @Test
     public void testFindBooksByAuthor() {
-        System.out.println("findBooksByAuthor");
-        String author = "";
-        BookDAO instance = null;
-        List<IBook> expResult = null;
-        List<IBook> result = instance.findBooksByAuthor(author);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        BookDAO instance = new BookDAO(new BookHelper());
+        instance.addBook("Author", "Title", "CallNumber");
+        instance.addBook("OtherAuthor", "Title", "CallNumber");
+        instance.addBook("Author", "OtherTitle", "CallNumber");
+        
+        assertTrue(instance.findBooksByAuthor("Author").size() == 2);
+        assertTrue(instance.findBooksByAuthor("invalid").size() == 0);
+        assertTrue(instance.findBooksByAuthor(null).size() == 0);
+        assertTrue(instance.findBooksByAuthor("OtherAuthor").size() == 1);
     }
 
     /**
@@ -151,14 +152,14 @@ public class BookDAOTest {
      */
     @Test
     public void testFindBooksByTitle() {
-        System.out.println("findBooksByTitle");
-        String title = "";
-        BookDAO instance = null;
-        List<IBook> expResult = null;
-        List<IBook> result = instance.findBooksByTitle(title);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        BookDAO instance = new BookDAO(new BookHelper());
+        instance.addBook("Author", "Title", "CallNumber");
+        instance.addBook("OtherAuthor", "Title", "CallNumber");
+        instance.addBook("Author", "OtherTitle", "CallNumber");
+        
+        assertTrue(instance.findBooksByTitle("Title").size() == 2);
+        assertTrue(instance.findBooksByTitle("invalid").size() == 0);
+        assertTrue(instance.findBooksByTitle("OtherTitle").size() == 1);
     }
 
     /**
@@ -166,15 +167,14 @@ public class BookDAOTest {
      */
     @Test
     public void testFindBooksByAuthorTitle() {
-        System.out.println("findBooksByAuthorTitle");
-        String author = "";
-        String title = "";
-        BookDAO instance = null;
-        List<IBook> expResult = null;
-        List<IBook> result = instance.findBooksByAuthorTitle(author, title);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        BookDAO instance = new BookDAO(new BookHelper());
+        instance.addBook("Author", "Title", "CallNumber");
+        instance.addBook("OtherAuthor", "Title", "CallNumber");
+        instance.addBook("Author", "OtherTitle", "CallNumber");
+        
+        assertTrue(instance.findBooksByAuthorTitle("OtherAuthor", "Title").size() == 1);
+        assertTrue(instance.findBooksByAuthorTitle("Author", "Title").size() == 1);
+        assertTrue(instance.findBooksByAuthorTitle("Author", "OtherTitle").size() == 1);
     }
     
 }
