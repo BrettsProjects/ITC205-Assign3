@@ -272,7 +272,7 @@ public class BookTest {
     }
     
     /**
-     * Test ensures that the book that is available cannot be returned.
+     * Test ensures that the book that is not on loan cannot be returned.
      */
     @Test(expected=RuntimeException.class)
     public void testBookThatIsAvailable()
@@ -280,16 +280,22 @@ public class BookTest {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
         book.returnBook(false);
     }
+    
     /**
-     * Test of lose method, of class Book.
+     * Test of lose method, of class Book. The book must be on loan before it
+     * can be lost
      */
-    @Test
+    @Test(expected=RuntimeException.class)
     public void testLose() {
-        System.out.println("lose");
-        Book instance = null;
-        instance.lose();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.lose();
+    }
+    
+    @Test(expected=RuntimeException.class)
+    public void testLoseOnLoan() {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.lose();
     }
 
     /**
