@@ -247,9 +247,16 @@ public class BookTest {
     {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
         Loan loan = new Loan();
+        loan.setInputString("Hello Tester");
         book.borrow(loan);
         book.lose();
-        assertTrue(book.getLoan().equals(loan));
+        Loan returnedLoan = (Loan) book.getLoan();
+        if (returnedLoan == null)
+        {
+            System.out.println("The loan object being returned is null.");
+            fail();
+        }
+        assertTrue(returnedLoan.getInputString().equals("Hello Tester"));
     }
 
     /**

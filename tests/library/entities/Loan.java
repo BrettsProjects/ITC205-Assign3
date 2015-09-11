@@ -14,6 +14,8 @@ import library.interfaces.entities.IMember;
  * @author Brett.Smith
  */
 public class Loan implements ILoan{
+    
+    private String inputString_;
 
     @Override
     public void commit(int id) {
@@ -48,6 +50,16 @@ public class Loan implements ILoan{
     @Override
     public int getID() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public String getInputString()
+    {
+        return inputString_;
+    }
+    
+    public void setInputString(String inputString)
+    {
+        inputString_ = inputString;
     }
     
 }
