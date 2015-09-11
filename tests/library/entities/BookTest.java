@@ -291,7 +291,7 @@ public class BookTest {
         book.lose();
     }
     
-    @Test(expected=RuntimeException.class)
+    @Test
     public void testLoseOnLoan() {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
         book.borrow(new Loan());
@@ -299,16 +299,25 @@ public class BookTest {
     }
 
     /**
-     * Test of repair method, of class Book.
+     * Test of repair method, of class Book. Ensure that repair throws a
+     * Runtime exception where the book is not currently damaged and check that
+     * a damaged book can be repaired.
      */
-    @Test
+    @Test(expected=RuntimeException.class)
     public void testRepair() {
-        System.out.println("repair");
-        Book instance = null;
-        instance.repair();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.repair();
     }
+    
+    @Test
+    public void testRepairDamagedBook() {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.returnBook(true);
+        book.repair();
+        assertTrue(book.getState() == eBookState_.AVAILABLE);
+    }
+    
 
     /**
      * Test of dispose method, of class Book.
