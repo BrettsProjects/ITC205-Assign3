@@ -435,6 +435,91 @@ public class BookTest {
         book.dispose();
         assertTrue(book.getState().equals(eBookState_.DISPOSED));
     }
+    
+    /**
+     * Ensures that a damaged book cannot be lost.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testDamagedBookCannotBeLost()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.dispose();
+        book.lose();
+    }
+    
+    /**
+     * Ensures that an on loan book cannot be disposed.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testOnLoanBookCannotBeDisposed()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.lose();
+    }
+    
+    /**
+     * Ensures than an LOST book cannot become available by returnBook() method
+     * calls
+     */
+    @Test(expected=RuntimeException.class)
+    public void testLostBooksCannotBecomeDamaged()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.lose();
+        book.returnBook(true);
+    }
+    
+    /**
+     * Ensures than an LOST book cannot become available by returnBook() method
+     * calls
+     */
+    @Test(expected=RuntimeException.class)
+    public void testLostBooksCannotBecomeAvailable()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.lose();
+        book.returnBook(false);
+    }
+    
+    /**
+     * Ensures than an DISPOSED book cannot become available by returnBook() method
+     * calls
+     */
+    @Test(expected=RuntimeException.class)
+    public void testDisposedBooksCannotBecomeDamaged()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.dispose();
+        book.returnBook(true);
+    }
+    
+    /**
+     * Ensures than an DISPOSED book cannot become available by returnBook() method
+     * calls
+     */
+    @Test(expected=RuntimeException.class)
+    public void testDisposedBooksCannotBecomeAvailable()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.dispose();
+        book.returnBook(false);
+    }
+    
+    /**
+     * Ensures than an DISPOSED book cannot become lost by lose() method
+     * calls
+     */
+    @Test(expected=RuntimeException.class)
+    public void testDisposedBooksCannotBecomeLost()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.dispose();
+        book.lose();
+    }
 
     /**
      * Test of getAuthor method, of class Book. Ensures the correct string
