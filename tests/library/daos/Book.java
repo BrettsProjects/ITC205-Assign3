@@ -82,30 +82,6 @@ public class Book implements IBook {
      * @param other
      * @return 
      */
-    @Override
-    public boolean equals(Object other)
-    {
-        if (other instanceof Book)
-        {
-            Book book = (Book) other;
-            return (book.hashCode() == this.hashCode());
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.author_);
-        hash = 59 * hash + Objects.hashCode(this.title_);
-        hash = 59 * hash + Objects.hashCode(this.callNumber_);
-        hash = 59 * hash + this.bookId_;
-        hash = 59 * hash + Objects.hashCode(this.loanAssociated_);
-        return hash;
-    }
 
     @Override
     public void borrow(ILoan loan) {

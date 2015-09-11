@@ -48,10 +48,16 @@ public class BookHelperTest {
         String callNumber = "CallNumber";
         int id = 50;
         library.daos.BookHelper instance = new library.daos.BookHelper();
-        System.out.println("echo 1");
         IBook expResult = new Book(author, title, callNumber, id);
-        System.out.println("echo 2");
         IBook result = instance.makeBook(author, title, callNumber, id);
+        
+        // Test each element that defines the object is present and correct.
+        assertEquals(expResult.getAuthor(), result.getAuthor());
+        assertEquals(expResult.getCallNumber(), result.getCallNumber());
+        assertEquals(expResult.getID(), result.getID());
+        assertEquals(expResult.getLoan(), result.getLoan());
+        assertEquals(expResult.getState(), result.getState());
+        assertEquals(expResult.getTitle(), result.getTitle());
     }
     
 }
