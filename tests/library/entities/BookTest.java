@@ -347,6 +347,22 @@ public class BookTest {
         book.dispose();
         assertTrue(book.getState() == eBookState_.DISPOSED);
     }
+    
+    @Test(expected=RuntimeException.class)
+    public void TestDisposedAlreadyDisposed()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.dispose();
+        book.dispose();
+    }
+    
+    @Test(expected=RuntimeException.class)
+    public void TestDisposedOnLoan()
+    {
+        Book book = new Book("MyBook", "MyBook", "MyBook", 100);
+        book.borrow(new Loan());
+        book.dispose();
+    }
 
     /**
      * Test of getState method, of class Book.
@@ -367,13 +383,8 @@ public class BookTest {
      */
     @Test
     public void testGetAuthor() {
-        System.out.println("getAuthor");
-        Book instance = null;
-        String expResult = "";
-        String result = instance.getAuthor();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Book book = new Book("Author", "BookTitle", "CallNumber", 256);
+        assertTrue(book.getAuthor().equals("Author"));
     }
 
     /**
@@ -381,13 +392,8 @@ public class BookTest {
      */
     @Test
     public void testGetTitle() {
-        System.out.println("getTitle");
-        Book instance = null;
-        String expResult = "";
-        String result = instance.getTitle();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Book book = new Book("Author", "BookTitle", "CallNumber", 256);
+        assertTrue(book.getTitle().equals("BookTitle"));
     }
 
     /**
@@ -395,13 +401,8 @@ public class BookTest {
      */
     @Test
     public void testGetCallNumber() {
-        System.out.println("getCallNumber");
-        Book instance = null;
-        String expResult = "";
-        String result = instance.getCallNumber();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Book book = new Book("Author", "BookTitle", "CallNumber", 256);
+        assertTrue(book.getCallNumber().equals("CallNumber"));
     }
 
     /**
@@ -409,13 +410,8 @@ public class BookTest {
      */
     @Test
     public void testGetID() {
-        System.out.println("getID");
-        Book instance = null;
-        int expResult = 0;
-        int result = instance.getID();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Book book = new Book("Author", "BookTitle", "CallNumber", 256);
+        assertTrue(book.getID() == 256);
     }
     
 }
