@@ -6,7 +6,6 @@
 package library.entities;
 
 import library.interfaces.entities.EBookState;
-import library.interfaces.entities.ILoan;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -42,6 +41,10 @@ public class BookTest {
     public void tearDown() {
     }
 
+    /**
+     * The tests below ensure that the constructor cannot be called with
+     * invalid input in any of the constructor fields for Book.java
+     */
     @Test(expected=IllegalArgumentException.class)
     public void testBookConstructor1()
     {
@@ -226,6 +229,10 @@ public class BookTest {
         assertTrue(book.getLoan() == null);
     }
     
+    /**
+     * Ensures that a getLoan() call should be null when a damaged book is returned
+     * and then disposed.
+     */
     @Test
     public void testGetLoanShouldBeNullWhenDamagedthenDisposed()
     {
@@ -237,6 +244,10 @@ public class BookTest {
         assertTrue(book.getLoan() == null);
     }
     
+    /**
+     * Test ensures that the loan is still associated to a lost book so the
+     * system knows which loan the book was lost on.
+     */
     @Test
     public void testGetLoanShouldntBeNullWhenLost()
     {
@@ -255,7 +266,9 @@ public class BookTest {
     }
 
     /**
-     * Test of returnBook method, of class Book.
+     * Test of returnBook method, of class Book. Ensures that the return book
+     * places the book into the correct object state. Applies to next two
+     * methods.
      */
     @Test
     public void testReturnBook() {
@@ -293,6 +306,9 @@ public class BookTest {
         book.lose();
     }
     
+    /**
+     * Ensures that a book can be lost whilst it is on loan.
+     */
     @Test
     public void testLoseOnLoan() {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
@@ -311,6 +327,10 @@ public class BookTest {
         book.repair();
     }
     
+    /** 
+     * Test of repair method, ensures that a repair() method call makes the
+     * book available to be borrowed again.
+     */
     @Test
     public void testRepairDamagedBook() {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
@@ -343,6 +363,9 @@ public class BookTest {
         assertTrue(book.getState() == eBookState_.DISPOSED);
     }
     
+    /**
+     * Ensures that an already disposed book cannot be disposed again.
+     */
     @Test(expected=RuntimeException.class)
     public void TestDisposedAlreadyDisposed()
     {
@@ -351,6 +374,9 @@ public class BookTest {
         book.dispose();
     }
     
+    /**
+     * Ensures that a book that is presently on loan cannot be disposed.
+     */
     @Test(expected=RuntimeException.class)
     public void TestDisposedOnLoan()
     {
@@ -360,8 +386,8 @@ public class BookTest {
     }
 
     /**
-     * Test of getState method, of class Book. Ensures that the corect state
-     * is returned by book for each of the state transitions.
+     * Test of getState method, of class Book. Ensures that the correct state
+     * is returned by book for each of the VALID state transitions.
      */
     @Test
     public void testGetState() {
@@ -411,7 +437,8 @@ public class BookTest {
     }
 
     /**
-     * Test of getAuthor method, of class Book.
+     * Test of getAuthor method, of class Book. Ensures the correct string
+     * is returned.
      */
     @Test
     public void testGetAuthor() {
@@ -420,7 +447,8 @@ public class BookTest {
     }
 
     /**
-     * Test of getTitle method, of class Book.
+     * Test of getTitle method, of class Book. Ensures the correct string
+     * is returned.
      */
     @Test
     public void testGetTitle() {
@@ -429,7 +457,8 @@ public class BookTest {
     }
 
     /**
-     * Test of getCallNumber method, of class Book.
+     * Test of getCallNumber method, of class Book. Ensures the correct string
+     * is returned.
      */
     @Test
     public void testGetCallNumber() {
@@ -438,7 +467,8 @@ public class BookTest {
     }
 
     /**
-     * Test of getID method, of class Book.
+     * Test of getID method, of class Book. Ensures the correct string
+     * is returned.
      */
     @Test
     public void testGetID() {
