@@ -32,7 +32,7 @@ public class BookDAO implements IBookDAO {
         {
             iBookHelper_ = helper;
             bookList_ = new ArrayList<>();
-            currentBookCount_ = 0;
+            currentBookCount_ = 1;
         }
     }
 

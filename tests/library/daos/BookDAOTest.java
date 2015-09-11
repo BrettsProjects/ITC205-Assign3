@@ -40,20 +40,36 @@ public class BookDAOTest {
     }
 
     /**
-     * Test of addBook method, of class BookDAO.
+     * Ensures that the illegal argument exception is thrown when the 
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testConstructorInvalidParam()
+    {
+        BookDAO instance = new BookDAO(null);
+    }
+    
+    /**
+     * Ensures that valid arguments create a new instance of BookDAO
+     */
+    @Test
+    public void testConstructorValidParam()
+    {
+        BookDAO instance = new BookDAO(new BookHelper());
+    }
+    
+    /**
+     * Test of addBook method, of class BookDAO. Adds only valid books. Another
+     * method will be used to check for invalid book messages.
      */
     @Test
     public void testAddBook() {
-        System.out.println("addBook");
-        String author = "";
-        String title = "";
-        String callNo = "";
-        BookDAO instance = null;
-        IBook expResult = null;
-        IBook result = instance.addBook(author, title, callNo);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        BookDAO instance = new BookDAO(new BookHelper());
+        instance.addBook("Author", "Title", "CallNumber");
+        instance.addBook("OtherAuthor", "Title", "CallNumber");
+        instance.addBook("Author", "OtherTitle", "CallNumber");
+        
+        assertTrue(instance.findBooksByAuthor("Author").size() == 2);
+        assertTrue(instance.findBooksByAuthor("OtherAuthor").size() == 1);
     }
 
     /**
