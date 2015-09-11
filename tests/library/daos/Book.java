@@ -5,6 +5,7 @@ import library.interfaces.entities.EBookState;
 import library.interfaces.entities.IBook;
 import library.interfaces.entities.ILoan;
 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -87,19 +88,7 @@ public class Book implements IBook {
         if (other instanceof Book)
         {
             Book book = (Book) other;
-            if(this.author_.equals(book.getAuthor()) && 
-                    this.bookId_ == book.getID() && 
-                    this.callNumber_.equals(book.getCallNumber()) && 
-                    this.eBookState_ == book.getState() &&
-                    this.loanAssociated_.equals(book.getLoan()) &&
-                    this.title_.equals(book.getTitle()))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return (book.hashCode() == this.hashCode());
         }
         else
         {
@@ -125,7 +114,7 @@ public class Book implements IBook {
 
     @Override
     public ILoan getLoan() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return loanAssociated_;
     }
 
     @Override
@@ -150,26 +139,26 @@ public class Book implements IBook {
 
     @Override
     public EBookState getState() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return eBookState_;
     }
 
     @Override
     public String getAuthor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return author_;
     }
 
     @Override
     public String getTitle() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return title_;
     }
 
     @Override
     public String getCallNumber() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return callNumber_;
     }
 
     @Override
     public int getID() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return bookId_;
     }
 }
