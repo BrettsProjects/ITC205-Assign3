@@ -78,7 +78,6 @@ public class BookTest {
      */
     @Test
     public void testBorrowAvailable() {
-        System.out.println("Borrow: Book is AVAILABLE test.");
         Book book = new Book("Available", "Available", "Available", 10);
         assertTrue(book.getState() == eBookState_.AVAILABLE);
         book.borrow(new Loan());
@@ -91,7 +90,6 @@ public class BookTest {
     @Test(expected=RuntimeException.class)
     public void testBorrowOnLoan()
     {
-        System.out.println("Borrow: Book is ON LOAN test.");
         Loan loan = new Loan();
         Loan otherLoan = new Loan();
         Book book = new Book("Available", "Available", "Available", 10);
@@ -105,7 +103,6 @@ public class BookTest {
     @Test(expected=RuntimeException.class)
     public void testBorrowDamaged()
     {
-        System.out.println("Borrow: Book is DAMAGED test.");
         Loan loan = new Loan();
         Loan otherLoan = new Loan();
         Book book = new Book("Available", "Available", "Available", 10);
@@ -121,7 +118,6 @@ public class BookTest {
     public void testBorrowLost()
     {
         Loan loan = new Loan();
-        System.out.println("Borrow: Book is LOST test.");
         Book book = new Book("Available", "Available", "Available", 10);
         book.lose();
         book.borrow(loan);
@@ -134,7 +130,6 @@ public class BookTest {
     public void testBorrowDisposed()
     {
         Loan loan = new Loan();
-        System.out.println("Borrow: Book is DISPOSED test.");
         Book book = new Book("Available", "Available", "Available", 10);
         book.dispose();
         book.borrow(loan);
