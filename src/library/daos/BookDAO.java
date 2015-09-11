@@ -7,13 +7,30 @@ package library.daos;
 
 import java.util.List;
 import library.interfaces.daos.IBookDAO;
+import library.interfaces.daos.IBookHelper;
 import library.interfaces.entities.IBook;
 
 /**
  *
  * @author Brett Smith
  */
-public class BookDAO implements IBookDAO{
+public class BookDAO implements IBookDAO {
+    
+    private IBookHelper iBookHelper_;
+    private int currentBookCount_;
+    
+    public BookDAO(IBookHelper helper)
+    {
+        if (helper == null)
+        {
+            throw new IllegalArgumentException("The helper object cannot "
+                    + "be null.");
+        }
+        else
+        {
+            iBookHelper_ = helper;
+        }
+    }
 
     @Override
     public IBook addBook(String author, String title, String callNo) {
