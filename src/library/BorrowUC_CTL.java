@@ -55,8 +55,19 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	}
 	
 	public void initialise() {
-		previous = display.getDisplay();
-		display.setDisplay((JPanel) ui, "Borrow UI");		
+            // Preconditions: memberDAO, loanDAO, bookDAO, display, cardReader,
+            // scanner and printer exist (not null).
+            // BorrowBookCTL added as lisener to cardREader and scanner (Assume)
+            // BorrowBookCTL is in the CREATED state.
+            if (state.equals(state.CREATED))
+            {
+                previous = display.getDisplay();
+                reader.setEnabled(true);
+                scanner.setEnabled(false);
+                display.setDisplay((JPanel) ui, "Borrow UI");
+                state = state.INITIALIZED;
+            }
+            
 	}
 	
 	public void close() {
