@@ -30,7 +30,6 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	private IScanner scanner; 
 	private IPrinter printer; 
 	private IDisplay display;
-	//private String state;
 	private int scanCount = 0;
 	private IBorrowUI ui;
 	private EBorrowState state; 
@@ -55,19 +54,9 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	}
 	
 	public void initialise() {
-            // Preconditions: memberDAO, loanDAO, bookDAO, display, cardReader,
-            // scanner and printer exist (not null).
-            // BorrowBookCTL added as lisener to cardREader and scanner (Assume)
-            // BorrowBookCTL is in the CREATED state.
-            if (state.equals(state.CREATED))
-            {
-                previous = display.getDisplay();
-                reader.setEnabled(true);
-                scanner.setEnabled(false);
-                display.setDisplay((JPanel) ui, "Borrow UI");
-                state = state.INITIALIZED;
-            }
-            
+            this.previous = this.display.getDisplay();
+            this.display.setDisplay((JPanel)this.ui, "Borrow UI");
+            setState(EBorrowState.INITIALIZED);
 	}
 	
 	public void close() {
@@ -76,11 +65,120 @@ public class BorrowUC_CTL implements ICardReaderListener,
 
 	@Override
 	public void cardSwiped(int memberID) {
-		throw new RuntimeException("Not implemented yet");
+            if (state.equals(state.INITIALIZED))
+            {
+                // Get the borrower
+                borrower = memberDAO.getMemberByID(memberID);
+                if (borrower == null)
+                {
+                    ui.displayErrorMessage("The scanned member "
+                            + "does not exist!");
+                    return;
+                }
+                
+                // Set the interface based on borrower object
+                if(borrower.hasOverDueLoans() || borrower.hasReachedFineLimit()
+                        || borrower.hasReachedLoanLimit())
+                {
+                    setState(state.BORROWING_RESTRICTED);
+                    ui.setState(state.BORROWING_RESTRICTED);
+                    
+                    // Display member details
+                    displayMemberDetails();
+                    
+                    // Display existing loans
+                    displayLoans();
+                    
+                    // Existing fine message displayed if relevant
+                    displayFines();
+                    
+                    // Overdue message displayed if relevant
+                    displayOverDueMessage();
+                    
+                    // atLoanLimit message displayed if relevant
+                    displayAtLoanLimitMessage();
+                    
+                    // borrowing restricted error message displayed
+                    displayBorrowingRestrictedError();
+                }
+                else
+                {
+                    setState(state.SCANNING_BOOKS);
+                    ui.setState(state.SCANNING_BOOKS);
+                    
+                    // Display member details
+                    displayMemberDetails();
+
+                    //display existing loans
+                    displayLoans();
+                    
+                    //scan count initialised to number of existing loans
+                    scanCount = countLoans();
+                    
+                    //existing fine message displayed if relevant
+                    displayFines();
+                }
+                
+            }
+            else
+            {
+                throw new RuntimeException("Card cannot be swiped when "
+                        + "borrowing system is not yet initialised.");
+            }
 	}
+        
+        private int countLoans()
+        {
+            return borrower.getLoans().size();
+        }
 	
+	private void displayLoans()
+        {
+            String allLoans = "";
+            List loans = borrower.getLoans();
+            for (int i = 0; i < loans.size(); i++)
+            {
+                allLoans = loans.get(i).toString() + "\r\n";
+            }
+            ui.displayExistingLoan(allLoans);
+        }
+        
+        private void displayMemberDetails()
+        {
+            ui.displayMemberDetails(borrower.getID(), borrower.getFirstName() + " " + borrower.getLastName() , borrower.getContactPhone());
+        }
 	
-	
+        private void displayFines()
+        {
+            if (borrower.hasFinesPayable())
+            {
+                Float amount = borrower.getFineAmount();
+                ui.displayOutstandingFineMessage(amount);
+            }
+        }
+        
+        private void displayOverDueMessage()
+        {
+            if (borrower.hasOverDueLoans())
+            {
+                ui.displayOverDueMessage();
+            }
+        }
+        
+        private void displayAtLoanLimitMessage()
+        {
+            if (borrower.hasReachedLoanLimit())
+            {
+                ui.displayAtLoanLimitMessage();
+            }
+        }
+        
+        private void displayBorrowingRestrictedError()
+        {
+            ui.displayErrorMessage("Borrowing is restricted at this time "
+                    + "for you.");
+        }
+        
 	@Override
 	public void bookScanned(int barcode) {
 		throw new RuntimeException("Not implemented yet");
@@ -88,7 +186,43 @@ public class BorrowUC_CTL implements ICardReaderListener,
 
 	
 	private void setState(EBorrowState state) {
-		throw new RuntimeException("Not implemented yet");
+            
+            // From Dr Tulips email, this method, being a private method
+            // wont be specified in any of the documentation as its a "how to"
+            // method. Dr Tulip uses it for changing the state of the
+            // application and so we will use it for displaying different UI
+            // components as that is how the state is represented.
+            
+            this.state = state;
+            this.ui.setState(state);
+            switch (state) {
+		case INITIALIZED:
+                        reader.setEnabled(true);
+                        scanner.setEnabled(false);
+			break;
+			
+		case SCANNING_BOOKS:
+			reader.setEnabled(false);
+                        scanner.setEnabled(true);
+			break;
+			
+		case BORROWING_RESTRICTED:
+                    reader.setEnabled(false);
+                    scanner.setEnabled(false);
+			break;
+			
+		case CONFIRMING_LOANS:
+			break;
+
+ 		case COMPLETED:
+			break;
+			
+		case CANCELLED:
+			break;
+			
+		default:
+			throw new RuntimeException("Unknown state");
+		}
 	}
 
 	@Override
