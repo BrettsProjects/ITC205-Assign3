@@ -83,7 +83,7 @@ public class BookTest {
     public void testBorrowAvailable() {
         Book book = new Book("Available", "Available", "Available", 10);
         assertTrue(book.getState() == eBookState_.AVAILABLE);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         assertTrue(book.getState() == eBookState_.ON_LOAN);
     }
     
@@ -93,8 +93,8 @@ public class BookTest {
     @Test(expected=RuntimeException.class)
     public void testBorrowOnLoan()
     {
-        Loan loan = new Loan();
-        Loan otherLoan = new Loan();
+        StubLoan loan = new StubLoan();
+        StubLoan otherLoan = new StubLoan();
         Book book = new Book("Available", "Available", "Available", 10);
         book.borrow(loan); //Book is now on Loan.
         book.borrow(otherLoan);
@@ -106,8 +106,8 @@ public class BookTest {
     @Test(expected=RuntimeException.class)
     public void testBorrowDamaged()
     {
-        Loan loan = new Loan();
-        Loan otherLoan = new Loan();
+        StubLoan loan = new StubLoan();
+        StubLoan otherLoan = new StubLoan();
         Book book = new Book("Available", "Available", "Available", 10);
         book.borrow(loan); // Book is now on Loan.
         book.returnBook(true); // Book is now damaged.
@@ -120,7 +120,7 @@ public class BookTest {
     @Test(expected=RuntimeException.class)
     public void testBorrowLost()
     {
-        Loan loan = new Loan();
+        StubLoan loan = new StubLoan();
         Book book = new Book("Available", "Available", "Available", 10);
         book.lose();
         book.borrow(loan);
@@ -132,7 +132,7 @@ public class BookTest {
     @Test(expected=RuntimeException.class)
     public void testBorrowDisposed()
     {
-        Loan loan = new Loan();
+        StubLoan loan = new StubLoan();
         Book book = new Book("Available", "Available", "Available", 10);
         book.dispose();
         book.borrow(loan);
@@ -158,7 +158,7 @@ public class BookTest {
     public void testGetLoanShouldBeNullAfterBorrowedAndReturned()
     {
         Book book = new Book("Available", "Available", "Available", 20);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.returnBook(false);
         assertTrue(book.getLoan() == null);
     }
@@ -172,7 +172,7 @@ public class BookTest {
     public void testBookOnLoanReturnsCorrectLoan()
     {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        Loan loan = new Loan();
+        StubLoan loan = new StubLoan();
         book.borrow(loan);
         assertTrue(book.getLoan().equals(loan));
     }
@@ -197,7 +197,7 @@ public class BookTest {
     public void testGetLoanShouldReturnLoanWhenLost()
     {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        Loan loan = new Loan();
+        StubLoan loan = new StubLoan();
         book.borrow(loan);
         book.lose();
         assertTrue(book.getLoan() != loan);
@@ -210,7 +210,7 @@ public class BookTest {
     public void testGetLoanShouldBeNullWhenDamaged()
     {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        Loan loan = new Loan();
+        StubLoan loan = new StubLoan();
         book.borrow(loan);
         book.returnBook(true);
         assertTrue(book.getLoan() == null);
@@ -237,7 +237,7 @@ public class BookTest {
     public void testGetLoanShouldBeNullWhenDamagedthenDisposed()
     {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        Loan loan = new Loan();
+        StubLoan loan = new StubLoan();
         book.borrow(loan);
         book.returnBook(true);
         book.dispose();
@@ -253,7 +253,7 @@ public class BookTest {
     public void testGetLoanShouldBeNullWhenLost()
     {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        Loan loan = new Loan();
+        StubLoan loan = new StubLoan();
         book.borrow(loan);
         book.lose();
         assertTrue(book.getLoan() == null);
@@ -267,7 +267,7 @@ public class BookTest {
     @Test
     public void testReturnBook() {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.returnBook(false);
         assertTrue(book.getState() == eBookState_.AVAILABLE);
     }
@@ -275,7 +275,7 @@ public class BookTest {
     @Test
     public void testReturnDamagedBook() {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.returnBook(true);
         assertTrue(book.getState() == eBookState_.DAMAGED);
     }
@@ -306,7 +306,7 @@ public class BookTest {
     @Test
     public void testLoseOnLoan() {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.lose();
     }
 
@@ -328,7 +328,7 @@ public class BookTest {
     @Test
     public void testRepairDamagedBook() {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.returnBook(true);
         book.repair();
         assertTrue(book.getState() == eBookState_.AVAILABLE);
@@ -341,7 +341,7 @@ public class BookTest {
     @Test
     public void testDispose() {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.returnBook(true);
         book.dispose();
         assertTrue(book.getState() == eBookState_.DISPOSED);
@@ -351,7 +351,7 @@ public class BookTest {
         assertTrue(book.getState() == eBookState_.DISPOSED);
         
         book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.lose();
         book.dispose();
         assertTrue(book.getState() == eBookState_.DISPOSED);
@@ -375,7 +375,7 @@ public class BookTest {
     public void TestDisposedOnLoan()
     {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.dispose();
     }
 
@@ -390,11 +390,11 @@ public class BookTest {
         assertTrue(book.getState().equals(eBookState_.DISPOSED));
         
         book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         assertTrue(book.getState().equals(eBookState_.ON_LOAN));
         
         book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.returnBook(true);
         assertTrue(book.getState().equals(eBookState_.DAMAGED));
         
@@ -402,29 +402,29 @@ public class BookTest {
         assertTrue(book.getState() == eBookState_.AVAILABLE);
         
         book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.returnBook(false);
         assertTrue(book.getState() == eBookState_.AVAILABLE);
         
         book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.lose();
         assertTrue(book.getState() == eBookState_.LOST);
         
         book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.lose();
         book.dispose();
         assertTrue(book.getState() == eBookState_.DISPOSED);
         
         book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.returnBook(true);
         book.repair();
         assertTrue(book.getState().equals(eBookState_.AVAILABLE));
         
         book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.returnBook(true);
         book.dispose();
         assertTrue(book.getState().equals(eBookState_.DISPOSED));
@@ -437,7 +437,7 @@ public class BookTest {
     public void testDamagedBookCannotBeLost()
     {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.dispose();
         book.lose();
     }
@@ -449,7 +449,7 @@ public class BookTest {
     public void testOnLoanBookCannotBeDisposed()
     {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.dispose();
     }
     
@@ -461,7 +461,7 @@ public class BookTest {
     public void testLostBooksCannotBecomeDamaged()
     {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.lose();
         book.returnBook(true);
     }
@@ -474,7 +474,7 @@ public class BookTest {
     public void testLostBooksCannotBecomeAvailable()
     {
         Book book = new Book("MyBook", "MyBook", "MyBook", 100);
-        book.borrow(new Loan());
+        book.borrow(new StubLoan());
         book.lose();
         book.returnBook(false);
     }

@@ -13,7 +13,7 @@ import library.interfaces.entities.IMember;
  *
  * @author Brett.Smith
  */
-public class Loan implements ILoan{
+public class StubLoan implements ILoan{
     
     private String inputString_;
 
