@@ -43,17 +43,17 @@ public class BookHelperIT {
      */
     @Test
     public void testMakeBook() {
-        System.out.println("makeBook");
-        String author = "";
-        String title = "";
-        String callNumber = "";
-        int id = 0;
+        String author = "Author";
+        String title = "Title";
+        String callNumber = "CallNumber";
+        int id = 10;
         BookHelper instance = new BookHelper();
-        IBook expResult = null;
+        
         IBook result = instance.makeBook(author, title, callNumber, id);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertTrue(result.getAuthor().equals(author));
+        assertTrue(result.getTitle().equals(title));
+        assertTrue(result.getCallNumber().equals(callNumber));
+        assertTrue(result.getID() == id);
     }
     
 }

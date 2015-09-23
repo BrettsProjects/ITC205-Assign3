@@ -13,12 +13,22 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
- *
+ * This file should be using mock classes to isolate the tests.
  * @author Brett Smith
  */
 public class BookDAOTest {
+    @Mock
+    private BookHelper bookHelper;
+    
+    private int i;
     
     public BookDAOTest() {
     }
@@ -33,6 +43,13 @@ public class BookDAOTest {
     
     @Before
     public void setUp() {
+        i = 0;
+        when(bookHelper.makeBook("Author", "Title", "CallNumber", anyInt())).thenReturn(new Book("Author", "Title", "CallNumber", ++i));
+        when(bookHelper.makeBook("OtherAuthor", "Title", "CallNumber", anyInt())).thenReturn(new Book("Author", "Title", "CallNumber", ++i));
+        when(bookHelper.makeBook("Author", "OtherTitle", "CallNumber", anyInt())).thenReturn(new Book("Author", "Title", "CallNumber", ++i));
+        when(bookHelper.makeBook("Author", "Title", "", anyInt())).thenThrow(RuntimeException.class);
+        when(bookHelper.makeBook(null, "Title", "", anyInt())).thenThrow(RuntimeException.class);
+        
     }
     
     @After
@@ -54,7 +71,7 @@ public class BookDAOTest {
     @Test
     public void testConstructorValidParam()
     {
-        BookDAO instance = new BookDAO(new BookHelper());
+        BookDAO instance = new BookDAO(bookHelper);
     }
     
     /**
@@ -63,11 +80,12 @@ public class BookDAOTest {
      */
     @Test
     public void testAddBook() {
-        BookDAO instance = new BookDAO(new BookHelper());
+        BookDAO instance = new BookDAO(bookHelper);
         instance.addBook("Author", "Title", "CallNumber");
         instance.addBook("OtherAuthor", "Title", "CallNumber");
         instance.addBook("Author", "OtherTitle", "CallNumber");
         
+        verify(bookHelper, times(3)).makeBook(any(String.class), any(String.class), any(String.class), anyInt());      
         assertTrue(instance.findBooksByAuthor("Author").size() == 2);
         assertTrue(instance.findBooksByAuthor("OtherAuthor").size() == 1);
         assertTrue(instance.listBooks().size() == 3);
@@ -79,7 +97,7 @@ public class BookDAOTest {
     @Test(expected=RuntimeException.class)
     public void testAddInvalidBook()
     {
-        BookDAO instance = new BookDAO(new BookHelper());
+        BookDAO instance = new BookDAO(bookHelper);
         instance.addBook("Author", "Title", "");
     }
     
@@ -98,7 +116,8 @@ public class BookDAOTest {
      */
     @Test
     public void testGetBookByID() {
-        BookDAO instance = new BookDAO(new BookHelper());
+        i = 0; // Resets i for testing the getBookByID below
+        BookDAO instance = new BookDAO(bookHelper);
         instance.addBook("Author", "Title", "CallNumber");
         instance.addBook("OtherAuthor", "Title", "CallNumber");
         instance.addBook("Author", "OtherTitle", "CallNumber");
@@ -113,7 +132,7 @@ public class BookDAOTest {
      */
     @Test
     public void testListBooks() {
-        BookDAO instance = new BookDAO(new BookHelper());
+        BookDAO instance = new BookDAO(bookHelper);
         instance.addBook("Author", "Title", "CallNumber");
         instance.addBook("OtherAuthor", "Title", "CallNumber");
         instance.addBook("Author", "OtherTitle", "CallNumber");
@@ -127,7 +146,7 @@ public class BookDAOTest {
      */
     @Test
     public void testListBooksNothingInList() {
-        BookDAO instance = new BookDAO(new BookHelper());
+        BookDAO instance = new BookDAO(bookHelper);
         assertTrue(instance.listBooks().size() == 0);
     }
 
@@ -136,7 +155,7 @@ public class BookDAOTest {
      */
     @Test
     public void testFindBooksByAuthor() {
-        BookDAO instance = new BookDAO(new BookHelper());
+        BookDAO instance = new BookDAO(bookHelper);
         instance.addBook("Author", "Title", "CallNumber");
         instance.addBook("OtherAuthor", "Title", "CallNumber");
         instance.addBook("Author", "OtherTitle", "CallNumber");
@@ -152,7 +171,7 @@ public class BookDAOTest {
      */
     @Test
     public void testFindBooksByTitle() {
-        BookDAO instance = new BookDAO(new BookHelper());
+        BookDAO instance = new BookDAO(bookHelper);
         instance.addBook("Author", "Title", "CallNumber");
         instance.addBook("OtherAuthor", "Title", "CallNumber");
         instance.addBook("Author", "OtherTitle", "CallNumber");
@@ -167,7 +186,7 @@ public class BookDAOTest {
      */
     @Test
     public void testFindBooksByAuthorTitle() {
-        BookDAO instance = new BookDAO(new BookHelper());
+        BookDAO instance = new BookDAO(bookHelper);
         instance.addBook("Author", "Title", "CallNumber");
         instance.addBook("OtherAuthor", "Title", "CallNumber");
         instance.addBook("Author", "OtherTitle", "CallNumber");

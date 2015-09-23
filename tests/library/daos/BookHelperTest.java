@@ -14,7 +14,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * Unfortunately no way to mock the constructor method call. Book has already
+ * been unit tested however.
  * @author Brett Smith
  */
 public class BookHelperTest {
