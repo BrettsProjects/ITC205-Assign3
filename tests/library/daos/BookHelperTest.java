@@ -49,7 +49,7 @@ public class BookHelperTest {
         String callNumber = "CallNumber";
         int id = 50;
         library.daos.BookHelper instance = new library.daos.BookHelper();
-        IBook expResult = new Book(author, title, callNumber, id);
+        IBook expResult = new StubBook(author, title, callNumber, id);
         IBook result = instance.makeBook(author, title, callNumber, id);
         
         // Test each element that defines the object is present and correct.

@@ -44,9 +44,9 @@ public class BookDAOTest {
     @Before
     public void setUp() {
         i = 0;
-        when(bookHelper.makeBook("Author", "Title", "CallNumber", anyInt())).thenReturn(new Book("Author", "Title", "CallNumber", ++i));
-        when(bookHelper.makeBook("OtherAuthor", "Title", "CallNumber", anyInt())).thenReturn(new Book("Author", "Title", "CallNumber", ++i));
-        when(bookHelper.makeBook("Author", "OtherTitle", "CallNumber", anyInt())).thenReturn(new Book("Author", "Title", "CallNumber", ++i));
+        when(bookHelper.makeBook("Author", "Title", "CallNumber", anyInt())).thenReturn(new StubBook("Author", "Title", "CallNumber", ++i));
+        when(bookHelper.makeBook("OtherAuthor", "Title", "CallNumber", anyInt())).thenReturn(new StubBook("Author", "Title", "CallNumber", ++i));
+        when(bookHelper.makeBook("Author", "OtherTitle", "CallNumber", anyInt())).thenReturn(new StubBook("Author", "Title", "CallNumber", ++i));
         when(bookHelper.makeBook("Author", "Title", "", anyInt())).thenThrow(RuntimeException.class);
         when(bookHelper.makeBook(null, "Title", "", anyInt())).thenThrow(RuntimeException.class);
         
