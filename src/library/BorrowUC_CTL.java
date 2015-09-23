@@ -267,9 +267,29 @@ public class BorrowUC_CTL implements ICardReaderListener,
 	@Override
 	public void loansConfirmed() {
             // We are in CONFIRMING_LOANS
-            
+            if (state == state.CONFIRMING_LOANS)
+            {
+                if (loanList.size() > 0)
+                {
+                    for (int i = 0; i < loanList.size(); i++)
+                    {
+                        loanDAO.commitLoan(loanList.get(i));
+                    }
+                    setState(state.COMPLETED);
+                    close();
+                }
+                else
+                {
+                    throw new RuntimeException("There are no loans to commit.");
+                }
+            }
+            else
+            {
+                throw new RuntimeException("You are not in a state to "
+                        + "confirm loans.");
+            }
             // Pending Loan List Exists thats not 0
-            
+            // DONE
             // Main menu is displayed
             
             // Pending loans are committed and recorded
