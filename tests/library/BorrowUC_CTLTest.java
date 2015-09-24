@@ -5,6 +5,8 @@
  */
 package library;
 
+import library.daos.MemberMapDAO;
+import library.entities.Member;
 import library.hardware.StubCardReader;
 import library.hardware.StubDisplay;
 import library.hardware.StubPrinter;
@@ -29,6 +31,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.mockito.Mock;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  *
@@ -66,6 +72,10 @@ public class BorrowUC_CTLTest {
         reader = new StubCardReader();
         printer = new StubPrinter();
         scanner = new StubScanner();
+        memberDAO = mock(MemberMapDAO.class);
+        when(memberDAO.getMemberByID(0)).thenReturn(null);
+        when(memberDAO.getMemberByID(10)).thenReturn(new Member("firstName", 
+                "lastName", "contactPhone", "email", 10));
     }
     
     @After
@@ -79,7 +89,6 @@ public class BorrowUC_CTLTest {
      */
     @Test
     public void testInitialise() {
-        System.out.println("initialise");
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         
@@ -94,11 +103,11 @@ public class BorrowUC_CTLTest {
     }
 
     /**
-     * Test of close method, of class BorrowUC_CTL.
+     * Test of close method, of class BorrowUC_CTL. Ensures that the object
+     * returns to the main menu on call. (This is an assumption)
      */
     @Test
     public void testClose() {
-        System.out.println("close");
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         
@@ -110,16 +119,54 @@ public class BorrowUC_CTLTest {
     }
 
     /**
-     * Test of cardSwiped method, of class BorrowUC_CTL.
+     * Test ensures that unrestricted members get unrestricted service.
      */
     @Test
-    public void testCardSwiped() {
-        System.out.println("cardSwiped");
+    public void testCardSwipedUnrestrictedMember() {
+        int memberID = 10;
+        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
+                display, bookDAO, loanDAO, memberDAO);
+        instance.initialise();
+        instance.cardSwiped(memberID);
+        assertTrue(scanner.getEnabled());
+        assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        
+        // Need to check with more cases for different member object types.
+    }
+    /**
+     * Tests that a member who is restricted, becomes restricted in the system.
+     */
+    @Test
+    public void testCardSwipedRestrictedMember() {
         int memberID = 0;
         BorrowUC_CTL instance = null;
         instance.cardSwiped(memberID);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
+    }
+    /**
+     * Ensures that when no such member exists, that the borrower object
+     * returned is null.
+     */
+    @Test
+    public void testCardSwipedNoSuchMember() {
+        int memberID = 0;
+        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
+                display, bookDAO, loanDAO, memberDAO);
+        instance.initialise();
+        instance.cardSwiped(memberID);
+        verify(memberDAO, times(1)).getMemberByID(memberID);
+        assertTrue(instance.getBorrower() == null);
+    }
+    /**
+     * Ensures that you cannot call cardSwiped unless you have initialised.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testCardSwipedBeforeInitialise() {
+        int memberID = 0;
+        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
+                display, bookDAO, loanDAO, memberDAO);
+        instance.cardSwiped(memberID);
     }
 
     /**

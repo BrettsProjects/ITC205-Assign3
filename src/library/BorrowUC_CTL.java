@@ -78,6 +78,10 @@ public class BorrowUC_CTL implements ICardReaderListener,
         // Returns to the main menu
     }
 
+    public IMember getBorrower()
+    {
+        return borrower;
+    }
     @Override
     public void cardSwiped(int memberID) 
     {
