@@ -52,6 +52,13 @@ public class BorrowUC_CTL implements ICardReaderListener,
         IMemberDAO memberDAO) 
     {
             this.display = display;
+            this.reader = reader;
+            this.scanner = scanner;
+            this.printer = printer;
+            this.display = display;
+            this.bookDAO = bookDAO;
+            this.loanDAO = loanDAO;
+            this.memberDAO = memberDAO;
             this.ui = new BorrowUC_UI(this);
             state = EBorrowState.CREATED;
             loanList = new ArrayList<>();
@@ -334,6 +341,11 @@ public class BorrowUC_CTL implements ICardReaderListener,
         scanCount = countLoans();
         displayMemberDetails();
         displayLoans();
+    }
+    
+    public EBorrowState getState()
+    {
+        return state;
     }
 
     private void setState(EBorrowState state) 

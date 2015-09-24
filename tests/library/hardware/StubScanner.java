@@ -16,6 +16,11 @@ public class StubScanner extends JFrame implements IScanner {
 	public void setEnabled(boolean enabled) {
             isEnabled = enabled;
 	}
+        
+        public boolean getEnabled()
+        {
+            return isEnabled;
+        }
 
 	@Override
 	public void addListener(IScannerListener listener) {

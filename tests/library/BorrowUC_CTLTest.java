@@ -5,12 +5,29 @@
  */
 package library;
 
+import library.hardware.StubCardReader;
+import library.hardware.StubDisplay;
+import library.hardware.StubPrinter;
+import library.hardware.StubScanner;
+import library.interfaces.EBorrowState;
+
+import library.interfaces.daos.IBookDAO;
+import library.interfaces.daos.ILoanDAO;
+import library.interfaces.daos.IMemberDAO;
+
+import library.interfaces.hardware.ICardReader;
+import library.interfaces.hardware.IDisplay;
+import library.interfaces.hardware.IPrinter;
+import library.interfaces.hardware.IScanner;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
+
 import org.mockito.Mock;
 
 /**
@@ -18,6 +35,19 @@ import org.mockito.Mock;
  * @author Brett.Smith
  */
 public class BorrowUC_CTLTest {
+    private StubDisplay display;
+    private StubCardReader reader;
+    private StubScanner scanner;
+    private StubPrinter printer;
+    
+    @Mock
+    private IBookDAO bookDAO;
+    
+    @Mock
+    private ILoanDAO loanDAO;
+    
+    @Mock
+    private IMemberDAO memberDAO;
     
     public BorrowUC_CTLTest() {
     }
@@ -32,7 +62,10 @@ public class BorrowUC_CTLTest {
     
     @Before
     public void setUp() {
-        
+        display = new StubDisplay();
+        reader = new StubCardReader();
+        printer = new StubPrinter();
+        scanner = new StubScanner();
     }
     
     @After
@@ -40,15 +73,24 @@ public class BorrowUC_CTLTest {
     }
 
     /**
-     * Test of initialise method, of class BorrowUC_CTL.
+     * Test of initialise method, of class BorrowUC_CTL. Ensures that a correct
+     * call to initialise, and BorrowBookCTL with correct variables will
+     * result in the appropriate object state change.
      */
     @Test
     public void testInitialise() {
         System.out.println("initialise");
-        BorrowUC_CTL instance = null;
+        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
+                display, bookDAO, loanDAO, memberDAO);
+        
+        assertTrue(instance.getState().equals(EBorrowState.CREATED));
+        
         instance.initialise();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        assertTrue(instance.getState().equals(EBorrowState.INITIALIZED));
+        assertTrue(display.getId().equals("Borrow UI"));
+        assertTrue(reader.getEnabled());
+        assertTrue(!scanner.getEnabled());
     }
 
     /**
@@ -57,10 +99,14 @@ public class BorrowUC_CTLTest {
     @Test
     public void testClose() {
         System.out.println("close");
-        BorrowUC_CTL instance = null;
+        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
+                display, bookDAO, loanDAO, memberDAO);
+        
+        assertTrue(instance.getState().equals(EBorrowState.CREATED));
+        
         instance.close();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        assertTrue(display.getId().equals("Main Menu"));
     }
 
     /**

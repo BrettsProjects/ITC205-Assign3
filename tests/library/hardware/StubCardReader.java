@@ -21,7 +21,11 @@ public class StubCardReader extends JFrame implements ICardReader {
 	public void setEnabled(boolean enabled) {
 		isEnabled = enabled;
 	}
-
+        
+        public boolean getEnabled()
+        {
+            return isEnabled;
+        }
 
 	@Override
 	public void addListener(ICardReaderListener listener) {
