@@ -188,18 +188,12 @@ public class BorrowUC_CTL implements ICardReaderListener,
 
     private void displayOverDueMessage()
     {
-        if (borrower.hasOverDueLoans())
-        {
-            ui.displayOverDueMessage();
-        }
+        ui.displayOverDueMessage();
     }
 
     private void displayAtLoanLimitMessage()
     {
-        if (borrower.hasReachedLoanLimit())
-        {
-            ui.displayAtLoanLimitMessage();
-        }
+        ui.displayAtLoanLimitMessage();
     }
 
     private void displayBorrowingRestrictedError()
@@ -350,6 +344,11 @@ public class BorrowUC_CTL implements ICardReaderListener,
     public EBorrowState getState()
     {
         return state;
+    }
+    
+    public int getScanCount()
+    {
+        return scanCount;
     }
 
     private void setState(EBorrowState state) 

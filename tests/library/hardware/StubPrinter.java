@@ -8,18 +8,18 @@ import javax.swing.JTextArea;
 
 public class StubPrinter extends JFrame implements IPrinter {
 
-	private JTextArea textArea;
+	private String textArea;
 
 	public StubPrinter() {
 	}
 
 	@Override
 	public void print(String printData) {
-		textArea.setText(printData);		
+		textArea = printData;		
 	}
         
         public String getPrintData()
         {
-            return textArea.getText();
+            return textArea;
         }
 }
