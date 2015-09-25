@@ -7,6 +7,12 @@ import library.hardware.Scanner;
 
 import java.util.Calendar;
 import java.util.Date;
+import library.daos.BookDAO;
+import library.daos.BookHelper;
+import library.daos.LoanHelper;
+import library.daos.LoanMapDAO;
+import library.daos.MemberHelper;
+import library.daos.MemberMapDAO;
 
 import library.interfaces.IMainListener;
 import library.interfaces.daos.IBookDAO;
@@ -33,7 +39,11 @@ public class Main implements IMainListener {
 		printer = new Printer();
 		display = new Display();
 		
-		//setupTestData();
+                bookDAO = new BookDAO(new BookHelper());
+                loanDAO = new LoanMapDAO(new LoanHelper());
+                memberDAO = new MemberMapDAO(new MemberHelper());
+                
+		setupTestData();
 	}
 
 

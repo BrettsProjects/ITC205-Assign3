@@ -73,11 +73,6 @@ public class BorrowUC_CTL implements ICardReaderListener,
         // Allows this controller class to be used.
     }
 
-    public void close() {
-        display.setDisplay(previous, "Main Menu");
-        // Returns to the main menu
-    }
-
     public IMember getBorrower()
     {
         return borrower;
@@ -235,6 +230,9 @@ public class BorrowUC_CTL implements ICardReaderListener,
                 ILoan loan = loanDAO.createLoan(borrower, book);
                 loanList.add(loan);
 
+                ui.displayScannedBookDetails(getBookDetails(book));
+                ui.displayPendingLoan(getLoansDetail());
+                
                 if (scanCount == 5)
                 {
                     setState(EBorrowState.CONFIRMING_LOANS);
@@ -244,9 +242,6 @@ public class BorrowUC_CTL implements ICardReaderListener,
                     throw new RuntimeException("Illegal operation: User has"
                             + " more than 5 books borrowed!");
                 }
-
-                ui.displayScannedBookDetails(getBookDetails(book));
-                ui.displayPendingLoan(getLoansDetail());
             }
         }
         else
@@ -283,7 +278,6 @@ public class BorrowUC_CTL implements ICardReaderListener,
         reader.setEnabled(true);
         scanner.setEnabled(false);
         setState(state.CANCELLED);
-        close();
     }
 
     @Override
@@ -328,7 +322,6 @@ public class BorrowUC_CTL implements ICardReaderListener,
                 setState(state.COMPLETED);
                 printer.print(getLoansDetail());
                 state = state.COMPLETED;
-                close();
             }
             else
             {

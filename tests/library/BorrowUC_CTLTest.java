@@ -108,6 +108,30 @@ public class BorrowUC_CTLTest {
         when(book9.getTitle()).thenReturn("Title");
         when(book9.getID()).thenReturn(9);
         
+        when(book8.getState()).thenReturn(EBookState.AVAILABLE);
+        when(book8.getAuthor()).thenReturn("Author");
+        when(book8.getCallNumber()).thenReturn("CallNum");
+        when(book8.getTitle()).thenReturn("Title");
+        when(book8.getID()).thenReturn(8);
+        
+        when(book7.getState()).thenReturn(EBookState.AVAILABLE);
+        when(book7.getAuthor()).thenReturn("Author");
+        when(book7.getCallNumber()).thenReturn("CallNum");
+        when(book7.getTitle()).thenReturn("Title");
+        when(book7.getID()).thenReturn(7);
+        
+        when(book6.getState()).thenReturn(EBookState.AVAILABLE);
+        when(book6.getAuthor()).thenReturn("Author");
+        when(book6.getCallNumber()).thenReturn("CallNum");
+        when(book6.getTitle()).thenReturn("Title");
+        when(book6.getID()).thenReturn(6);
+        
+        when(book5.getState()).thenReturn(EBookState.AVAILABLE);
+        when(book5.getAuthor()).thenReturn("Author");
+        when(book5.getCallNumber()).thenReturn("CallNum");
+        when(book5.getTitle()).thenReturn("Title");
+        when(book5.getID()).thenReturn(5);
+        
         /* Setup for Loan, LoanDAO */
         when(loanDAO.createLoan(any(), any())).thenReturn(loan);
         when(loan.toString()).thenReturn("FakeLoan");
@@ -160,22 +184,6 @@ public class BorrowUC_CTLTest {
         assertTrue(display.getId().equals("Borrow UI"));
         assertTrue(reader.getEnabled());
         assertTrue(!scanner.getEnabled());
-    }
-
-    /**
-     * Test of close method, of class BorrowUC_CTL. Ensures that the object
-     * returns to the main menu on call. (This is an assumption)
-     */
-    @Test
-    public void testClose() {
-        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
-                display, bookDAO, loanDAO, memberDAO);
-        
-        assertTrue(instance.getState().equals(EBorrowState.CREATED));
-        
-        instance.close();
-        
-        assertTrue(display.getId().equals("Main Menu"));
     }
 
     /**
@@ -495,5 +503,34 @@ public class BorrowUC_CTLTest {
         instance.bookScanned(10);
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
         assertTrue(instance.getScanCount() == 1);
+    }
+    
+    /**
+     * Test of bookScanned method, of class BorrowUC_CTL. Confirms that on the
+     * addition of 5 books causes the controller to transition state to 
+     * CONFIRMING_LOANS.
+     */
+    @Test
+    public void testBookScannedAdd5Books() 
+    {
+        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
+                display, bookDAO, loanDAO, memberDAO);
+        instance.initialise();
+        instance.cardSwiped(10);
+        instance.bookScanned(10);
+        assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        assertTrue(instance.getScanCount() == 1);
+        instance.bookScanned(8);
+        assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        assertTrue(instance.getScanCount() == 2);
+        instance.bookScanned(7);
+        assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        assertTrue(instance.getScanCount() == 3);
+        instance.bookScanned(6);
+        assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        assertTrue(instance.getScanCount() == 4);
+        instance.bookScanned(5);
+        assertTrue(instance.getState().equals(EBorrowState.CONFIRMING_LOANS));
+        assertTrue(instance.getScanCount() == 5);
     }
 }
