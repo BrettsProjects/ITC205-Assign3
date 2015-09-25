@@ -5,7 +5,6 @@
  */
 package library;
 
-import java.util.List;
 import library.daos.BookDAO;
 import library.daos.LoanMapDAO;
 import library.daos.MemberMapDAO;
@@ -24,11 +23,6 @@ import library.interfaces.entities.IBook;
 import library.interfaces.entities.ILoan;
 import library.interfaces.entities.IMember;
 
-import library.interfaces.hardware.ICardReader;
-import library.interfaces.hardware.IDisplay;
-import library.interfaces.hardware.IPrinter;
-import library.interfaces.hardware.IScanner;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -37,9 +31,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 
-import org.mockito.Mock;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -61,7 +53,7 @@ public class BorrowUC_CTLTest {
     private IBookDAO bookDAO;
     private ILoanDAO loanDAO;
     private IMemberDAO memberDAO;
-    private IBook book;
+    private IBook book10, book9, book8, book7, book6, book5;
     private ILoan loan;
     
     public BorrowUC_CTLTest() {
@@ -87,16 +79,34 @@ public class BorrowUC_CTLTest {
         bookDAO = mock(BookDAO.class);
         loanDAO = mock(LoanMapDAO.class);
         memberDAO = mock(MemberMapDAO.class);
-        book = mock(IBook.class);
+        book10 = mock(IBook.class);
         loan = mock(ILoan.class);
+        book9 = mock(IBook.class);
+        book8 = mock(IBook.class);
+        book7 = mock(IBook.class);
+        book6 = mock(IBook.class);
+        book5 = mock(IBook.class);
         
         /* Setup for Book, BookDAO */
-        when(bookDAO.getBookByID(10)).thenReturn(book);
-        when(book.getState()).thenReturn(EBookState.AVAILABLE);
-        when(book.getAuthor()).thenReturn("Author");
-        when(book.getCallNumber()).thenReturn("CallNum");
-        when(book.getTitle()).thenReturn("Title");
-        when(book.getID()).thenReturn(10);
+        when(bookDAO.getBookByID(10)).thenReturn(book10);
+        when(bookDAO.getBookByID(9)).thenReturn(book9);
+        when(bookDAO.getBookByID(8)).thenReturn(book8);
+        when(bookDAO.getBookByID(7)).thenReturn(book7);
+        when(bookDAO.getBookByID(6)).thenReturn(book6);
+        when(bookDAO.getBookByID(5)).thenReturn(book5);
+        when(bookDAO.getBookByID(4)).thenReturn(null);
+        
+        when(book10.getState()).thenReturn(EBookState.AVAILABLE);
+        when(book10.getAuthor()).thenReturn("Author");
+        when(book10.getCallNumber()).thenReturn("CallNum");
+        when(book10.getTitle()).thenReturn("Title");
+        when(book10.getID()).thenReturn(10);
+        
+        when(book9.getState()).thenReturn(EBookState.ON_LOAN);
+        when(book9.getAuthor()).thenReturn("Author");
+        when(book9.getCallNumber()).thenReturn("CallNum");
+        when(book9.getTitle()).thenReturn("Title");
+        when(book9.getID()).thenReturn(9);
         
         /* Setup for Loan, LoanDAO */
         when(loanDAO.createLoan(any(), any())).thenReturn(loan);
@@ -401,16 +411,89 @@ public class BorrowUC_CTLTest {
     }
     
     /**
-     * Test of bookScanned method, of class BorrowUC_CTL.
+     * Test of bookScanned method, of class BorrowUC_CTL. Ensures that normal
+     * conditions of adding a book are met.
      */
     @Test
-    public void testBookScanned() {
-        System.out.println("bookScanned");
-        int barcode = 0;
-        BorrowUC_CTL instance = null;
-        instance.bookScanned(barcode);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testBookScanned() 
+    {
+        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
+                display, bookDAO, loanDAO, memberDAO);
+        instance.initialise();
+        instance.cardSwiped(10);
+        assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        assertTrue(instance.getScanCount() == 0);
+        instance.bookScanned(10);
+        assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        assertTrue(instance.getScanCount() == 1);
     }
     
+    /**
+     * Test of bookScanned method, of class BorrowUC_CTL. Ensures that you
+     * cannot scan books without first swiping a card.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testBookScannedNotReadyToScan() 
+    {
+        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
+                display, bookDAO, loanDAO, memberDAO);
+        instance.initialise();
+        assertTrue(instance.getScanCount() == 0);
+        instance.bookScanned(10);
+    }
+    
+    /**
+     * Test of bookScanned method, of class BorrowUC_CTL. Ensures that a book
+     * that is not available cannot be scanned.
+     */
+    @Test
+    public void testBookScannedNotAvailable() 
+    {
+        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
+                display, bookDAO, loanDAO, memberDAO);
+        instance.initialise();
+        instance.cardSwiped(10);
+        assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        assertTrue(instance.getScanCount() == 0);
+        instance.bookScanned(9);
+        assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        assertTrue(instance.getScanCount() == 0);
+    }
+    
+    /**
+     * Test of bookScanned method, of class BorrowUC_CTL. Ensures that a book
+     * that doesnt exist cannot be added.
+     */
+    @Test
+    public void testBookScannedNotExist() 
+    {
+        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
+                display, bookDAO, loanDAO, memberDAO);
+        instance.initialise();
+        instance.cardSwiped(10);
+        assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        assertTrue(instance.getScanCount() == 0);
+        instance.bookScanned(4);
+        assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        assertTrue(instance.getScanCount() == 0);
+    }
+    
+    /**
+     * Test of bookScanned method, of class BorrowUC_CTL. confirms that the same
+     * book cannot be added twice.
+     */
+    @Test
+    public void testBookScannedAddSameBook() 
+    {
+        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
+                display, bookDAO, loanDAO, memberDAO);
+        instance.initialise();
+        instance.cardSwiped(10);
+        instance.bookScanned(10);
+        assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        assertTrue(instance.getScanCount() == 1);
+        instance.bookScanned(10);
+        assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        assertTrue(instance.getScanCount() == 1);
+    }
 }
