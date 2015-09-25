@@ -294,7 +294,6 @@ public class BorrowUC_CTLTest {
      */
     @Test
     public void testCancelled() {
-        System.out.println("cancelled");
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.cancelled();
@@ -317,6 +316,36 @@ public class BorrowUC_CTLTest {
         assertFalse(reader.getEnabled());
         assertFalse(scanner.getEnabled());
     }
+    
+    /**
+     * Test of scansCompleted method, of class BorrowUC_CTL. This test tests
+     * when there are no loans present in the loan list. Its an invalid state
+     * test.
+     */
+    @Test
+    public void testScansCompletedNoLoans() {
+        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
+                display, bookDAO, loanDAO, memberDAO);
+        instance.initialise();
+        instance.cardSwiped(10);
+        instance.scansCompleted();
+        assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        assertFalse(reader.getEnabled());
+        assertTrue(scanner.getEnabled());
+    }
+    
+    /**
+     * Test of scansCompleted method, of class BorrowUC_CTL. This test tests
+     * when we're not in SCANNING_BOOKS. Its an invalid state
+     * test.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testScansCompletedNotScanningBooks() {
+        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
+                display, bookDAO, loanDAO, memberDAO);
+        instance.initialise();
+        instance.scansCompleted();
+    }
 
     /**
      * Test of loansConfirmed method, of class BorrowUC_CTL.
@@ -332,8 +361,25 @@ public class BorrowUC_CTLTest {
         assertTrue(instance.getState().equals(EBorrowState.CONFIRMING_LOANS));
         instance.loansConfirmed();
         assertTrue(instance.getState().equals(EBorrowState.COMPLETED));
+        assertFalse(reader.getEnabled());
+        assertFalse(scanner.getEnabled());
+        assertTrue(printer.getPrintData() != null);
+        verify(loanDAO).commitLoan(any());
     }
-
+    
+    /**
+     * Test of loansConfirmed method, of class BorrowUC_CTL.
+     */
+    @Test(expected=RuntimeException.class)
+    public void testLoansConfirmedNotInStateForTransition() {
+        BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
+                display, bookDAO, loanDAO, memberDAO);
+        instance.initialise();
+        instance.cardSwiped(10);
+        instance.bookScanned(10);
+        instance.loansConfirmed();
+    }
+    
     /**
      * Test of loansRejected method, of class BorrowUC_CTL.
      */
@@ -348,6 +394,10 @@ public class BorrowUC_CTLTest {
         assertTrue(instance.getState().equals(EBorrowState.CONFIRMING_LOANS));
         instance.loansRejected();
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
+        assertFalse(reader.getEnabled());
+        assertTrue(scanner.getEnabled());
+        assertTrue(instance.getScanCount() == 0);
+        assertTrue(instance.getPendingLoans().size() == 0);
     }
     
     /**

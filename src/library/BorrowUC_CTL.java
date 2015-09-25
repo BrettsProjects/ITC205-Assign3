@@ -289,15 +289,27 @@ public class BorrowUC_CTL implements ICardReaderListener,
     @Override
     public void scansCompleted() 
     {
-        if (loanList.size() > 0)
+        if(state == state.SCANNING_BOOKS)
         {
-            setState(EBorrowState.CONFIRMING_LOANS);
-            ui.displayConfirmingLoan(getLoansDetail());
+            if (loanList.size() > 0)
+            {
+                setState(EBorrowState.CONFIRMING_LOANS);
+                ui.displayConfirmingLoan(getLoansDetail());
+            }
+            else
+            {
+                ui.displayErrorMessage("You need to scan atleast one book.");
+            }
         }
         else
         {
-            ui.displayErrorMessage("You need to scan atleast one book.");
+            throw new RuntimeException("You're not yet scanning books.");
         }
+    }
+    
+    public List<ILoan> getPendingLoans()
+    {
+        return loanList;
     }
 
 
@@ -333,12 +345,26 @@ public class BorrowUC_CTL implements ICardReaderListener,
     @Override
     public void loansRejected() 
     {
-        setState(state.SCANNING_BOOKS);
-        loanList = new ArrayList<>();
-        bookList = new ArrayList<>();
-        scanCount = countLoans();
-        displayMemberDetails();
-        displayLoans();
+        if (state == state.CONFIRMING_LOANS)
+        {
+            if (loanList.size() > 0)
+            {
+                setState(state.SCANNING_BOOKS);
+                loanList = new ArrayList<>();
+                bookList = new ArrayList<>();
+                scanCount = countLoans();
+                displayMemberDetails();
+                displayLoans();
+            }
+            else
+            {
+                throw new RuntimeException("There are no loans to reject.");
+            }
+        }
+        else
+        {
+            throw new RuntimeException("not yet confirming loans.");
+        }
     }
     
     public EBorrowState getState()
