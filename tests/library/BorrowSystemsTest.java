@@ -5,6 +5,7 @@
  */
 package library;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import library.daos.BookDAO;
@@ -41,7 +42,6 @@ public class BorrowSystemsTest {
     public static void main(String[] args)
     {
         BorrowSystemsTest borrowSystemsTest = new BorrowSystemsTest();
-        System.out.println("Test Result: " + borrowSystemsTest.runTests());
     }
     
     public BorrowSystemsTest()
@@ -50,10 +50,22 @@ public class BorrowSystemsTest {
         setupAdditionalTestData();
     }
     
-    public boolean runTests()
+    public void runTests()
     {
         // At this point, need to run systems tests.
-        return false;
+        runBorrowTest(1, 2);
+    }
+    
+    private void runBorrowTest(int memberID, int barcode)
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(memberID);
+        ctrl.bookScanned(barcode);
+        ctrl.scansCompleted();
+        ArrayList<ILoan> loanList = ctrl.getPendingLoans();
+        ctrl.loansConfirmed();
     }
     
     private void setupTestData() {
