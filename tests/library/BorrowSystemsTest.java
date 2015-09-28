@@ -54,10 +54,110 @@ public class BorrowSystemsTest {
     public void runTests()
     {
         // At this point, need to run systems tests.
-        runBorrowTest(1, 2);
     }
     
-    private void runBorrowTest(int memberID, int barcode)
+    private void runBorrowTest001()
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(1);
+        ctrl.bookScanned(1);
+        ctrl.scansCompleted();
+        ctrl.loansConfirmed();
+        ctrl.loansConfirmed();
+    }
+    
+    private void runBorrowTest002(int memberID, int barcode)
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(memberID);
+        ctrl.bookScanned(barcode);
+        ctrl.scansCompleted();
+        ctrl.loansConfirmed();
+        ctrl.loansConfirmed();
+    }
+    
+    private void runBorrowTest003(int memberID, int barcode)
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(memberID);
+        ctrl.bookScanned(barcode);
+        ctrl.scansCompleted();
+        ctrl.loansConfirmed();
+        ctrl.loansConfirmed();
+    }    
+    private void runBorrowTest004(int memberID, int barcode)
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(memberID);
+        ctrl.bookScanned(barcode);
+        ctrl.scansCompleted();
+        ctrl.loansConfirmed();
+        ctrl.loansConfirmed();
+    }    
+    private void runBorrowTest005(int memberID, int barcode)
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(memberID);
+        ctrl.bookScanned(barcode);
+        ctrl.scansCompleted();
+        ctrl.loansConfirmed();
+        ctrl.loansConfirmed();
+    }    
+    private void runBorrowTest006(int memberID, int barcode)
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(memberID);
+        ctrl.bookScanned(barcode);
+        ctrl.scansCompleted();
+        ctrl.loansConfirmed();
+        ctrl.loansConfirmed();
+    }    
+    private void runBorrowTest007(int memberID, int barcode)
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(memberID);
+        ctrl.bookScanned(barcode);
+        ctrl.scansCompleted();
+        ctrl.loansConfirmed();
+        ctrl.loansConfirmed();
+    }    
+    private void runBorrowTest008(int memberID, int barcode)
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(memberID);
+        ctrl.bookScanned(barcode);
+        ctrl.scansCompleted();
+        ctrl.loansConfirmed();
+        ctrl.loansConfirmed();
+    }    
+    private void runBorrowTest009(int memberID, int barcode)
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(memberID);
+        ctrl.bookScanned(barcode);
+        ctrl.scansCompleted();
+        ctrl.loansConfirmed();
+        ctrl.loansConfirmed();
+    }    
+    private void runBorrowTest010(int memberID, int barcode)
     {
         BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
 				 bookDAO, loanDAO, memberDAO);

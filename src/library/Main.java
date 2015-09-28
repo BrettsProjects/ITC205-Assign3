@@ -93,6 +93,18 @@ public class Main implements IMainListener {
 		member[3] = memberDAO.addMember("fName3", "lName3", "0004", "email3");
 		member[4] = memberDAO.addMember("fName4", "lName4", "0005", "email4");
 		member[5] = memberDAO.addMember("fName5", "lName5", "0006", "email5");
+                
+                // Additional test cases placed by Brett Smith for UAT.
+                memberDAO.addMember("fName0", "lName0", "0001", "email0"); //Member 7
+                memberDAO.addMember("fName0", "lName0", "0001", "email0"); //Member 8
+                memberDAO.addMember("fName0", "lName0", "0001", "email0"); //Member 9
+                bookDAO.addBook("author5", "title15", "callNo16");
+                bookDAO.addBook("author5", "title15", "callNo17");
+                bookDAO.addBook("author5", "title15", "callNo18");
+                bookDAO.addBook("author5", "title15", "callNo19");
+                bookDAO.addBook("author5", "title15", "callNo20");
+                bookDAO.addBook("author5", "title15", "callNo21");
+                bookDAO.addBook("author5", "title15", "callNo22");
 		
 		Calendar cal = Calendar.getInstance();
 		Date now = cal.getTime();
