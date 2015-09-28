@@ -8,6 +8,7 @@ package library;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import library.daos.BookDAO;
 import library.daos.BookHelper;
 import library.daos.LoanHelper;
@@ -64,7 +65,7 @@ public class BorrowSystemsTest {
         ctrl.cardSwiped(memberID);
         ctrl.bookScanned(barcode);
         ctrl.scansCompleted();
-        ArrayList<ILoan> loanList = ctrl.getPendingLoans();
+        ctrl.loansConfirmed();
         ctrl.loansConfirmed();
     }
     
