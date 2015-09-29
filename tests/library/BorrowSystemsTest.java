@@ -68,7 +68,6 @@ public class BorrowSystemsTest {
         ctrl.bookScanned(16);
         ctrl.scansCompleted();
         ctrl.loansConfirmed();
-        ctrl.loansConfirmed();
     }
     
     private void runBorrowTest002()
@@ -84,7 +83,6 @@ public class BorrowSystemsTest {
         ctrl.bookScanned(21);
         ctrl.scansCompleted();
         ctrl.loansConfirmed();
-        ctrl.loansConfirmed();
     }
     
     private void runBorrowTest003(int memberID, int barcode)
@@ -92,21 +90,22 @@ public class BorrowSystemsTest {
         BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
 				 bookDAO, loanDAO, memberDAO);
         ctrl.initialise();
-        ctrl.cardSwiped(memberID);
-        ctrl.bookScanned(barcode);
+        ctrl.cardSwiped(7);
+        ctrl.bookScanned(10);
+        ctrl.bookScanned(11);
+        ctrl.bookScanned(12);
+        ctrl.bookScanned(13);
         ctrl.scansCompleted();
         ctrl.loansConfirmed();
-        ctrl.loansConfirmed();
     }    
-    private void runBorrowTest004(int memberID, int barcode)
+    private void runBorrowTest004()
     {
         BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
 				 bookDAO, loanDAO, memberDAO);
         ctrl.initialise();
-        ctrl.cardSwiped(memberID);
-        ctrl.bookScanned(barcode);
+        ctrl.cardSwiped(6);
+        ctrl.bookScanned(14);
         ctrl.scansCompleted();
-        ctrl.loansConfirmed();
         ctrl.loansConfirmed();
     }    
     private void runBorrowTest005(int memberID, int barcode)
@@ -114,8 +113,8 @@ public class BorrowSystemsTest {
         BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
 				 bookDAO, loanDAO, memberDAO);
         ctrl.initialise();
-        ctrl.cardSwiped(memberID);
-        ctrl.bookScanned(barcode);
+        ctrl.cardSwiped(5);
+        ctrl.bookScanned(15);
         ctrl.scansCompleted();
         ctrl.loansConfirmed();
         ctrl.loansConfirmed();
@@ -125,55 +124,43 @@ public class BorrowSystemsTest {
         BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
 				 bookDAO, loanDAO, memberDAO);
         ctrl.initialise();
-        ctrl.cardSwiped(memberID);
-        ctrl.bookScanned(barcode);
-        ctrl.scansCompleted();
-        ctrl.loansConfirmed();
-        ctrl.loansConfirmed();
+        ctrl.cardSwiped(4);
+        ctrl.cancelled();
     }    
     private void runBorrowTest007(int memberID, int barcode)
     {
         BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
 				 bookDAO, loanDAO, memberDAO);
         ctrl.initialise();
-        ctrl.cardSwiped(memberID);
-        ctrl.bookScanned(barcode);
-        ctrl.scansCompleted();
-        ctrl.loansConfirmed();
-        ctrl.loansConfirmed();
+        ctrl.cardSwiped(2);
+        ctrl.cancelled();
     }    
     private void runBorrowTest008(int memberID, int barcode)
     {
         BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
 				 bookDAO, loanDAO, memberDAO);
         ctrl.initialise();
-        ctrl.cardSwiped(memberID);
-        ctrl.bookScanned(barcode);
-        ctrl.scansCompleted();
-        ctrl.loansConfirmed();
-        ctrl.loansConfirmed();
+        ctrl.cardSwiped(3);
+        ctrl.cancelled();
     }    
     private void runBorrowTest009(int memberID, int barcode)
     {
         BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
 				 bookDAO, loanDAO, memberDAO);
         ctrl.initialise();
-        ctrl.cardSwiped(memberID);
-        ctrl.bookScanned(barcode);
+        ctrl.cardSwiped(1);
+        ctrl.bookScanned(22);
         ctrl.scansCompleted();
-        ctrl.loansConfirmed();
-        ctrl.loansConfirmed();
+        ctrl.loansRejected();
     }    
     private void runBorrowTest010(int memberID, int barcode)
     {
         BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
 				 bookDAO, loanDAO, memberDAO);
         ctrl.initialise();
-        ctrl.cardSwiped(memberID);
-        ctrl.bookScanned(barcode);
-        ctrl.scansCompleted();
-        ctrl.loansConfirmed();
-        ctrl.loansConfirmed();
+        ctrl.cardSwiped(1);
+        ctrl.bookScanned(22);
+        ctrl.cancelled();
     }
     
     private void setupTestData() {
