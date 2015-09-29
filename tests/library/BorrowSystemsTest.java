@@ -38,6 +38,8 @@ public class BorrowSystemsTest {
     private IBookDAO bookDAO;
     private ILoanDAO loanDAO;
     private IMemberDAO memberDAO;
+    private IBook[] book;
+    private IMember[] member;
     
     
     public static void main(String[] args)
@@ -53,7 +55,8 @@ public class BorrowSystemsTest {
     
     public void runTests()
     {
-        // At this point, need to run systems tests.
+        runBorrowTest001();
+        runBorrowTest002();
     }
     
     private void runBorrowTest001()
@@ -61,20 +64,24 @@ public class BorrowSystemsTest {
         BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
 				 bookDAO, loanDAO, memberDAO);
         ctrl.initialise();
-        ctrl.cardSwiped(1);
-        ctrl.bookScanned(1);
+        ctrl.cardSwiped(7);
+        ctrl.bookScanned(16);
         ctrl.scansCompleted();
         ctrl.loansConfirmed();
         ctrl.loansConfirmed();
     }
     
-    private void runBorrowTest002(int memberID, int barcode)
+    private void runBorrowTest002()
     {
         BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
 				 bookDAO, loanDAO, memberDAO);
         ctrl.initialise();
-        ctrl.cardSwiped(memberID);
-        ctrl.bookScanned(barcode);
+        ctrl.cardSwiped(8);
+        ctrl.bookScanned(17);
+        ctrl.bookScanned(18);
+        ctrl.bookScanned(19);
+        ctrl.bookScanned(20);
+        ctrl.bookScanned(21);
         ctrl.scansCompleted();
         ctrl.loansConfirmed();
         ctrl.loansConfirmed();
@@ -179,8 +186,8 @@ public class BorrowSystemsTest {
         loanDAO = new LoanMapDAO(new LoanHelper());
         memberDAO = new MemberMapDAO(new MemberHelper());
         
-        IBook[] book = new IBook[15];
-        IMember[] member = new IMember[6];
+        book = new IBook[21];
+        member = new IMember[8];
 
         book[0]  = bookDAO.addBook("author1", "title1", "callNo1");
         book[1]  = bookDAO.addBook("author1", "title2", "callNo2");
@@ -239,15 +246,15 @@ public class BorrowSystemsTest {
     
     private void setupAdditionalTestData()
     {      
-        memberDAO.addMember("fName0", "lName0", "0001", "email0"); //Member 7
-        memberDAO.addMember("fName0", "lName0", "0001", "email0"); //Member 8
-        memberDAO.addMember("fName0", "lName0", "0001", "email0"); //Member 9
-        bookDAO.addBook("author5", "title15", "callNo16");
-        bookDAO.addBook("author5", "title15", "callNo17");
-        bookDAO.addBook("author5", "title15", "callNo18");
-        bookDAO.addBook("author5", "title15", "callNo19");
-        bookDAO.addBook("author5", "title15", "callNo20");
-        bookDAO.addBook("author5", "title15", "callNo21");
-        bookDAO.addBook("author5", "title15", "callNo22");
+        member[6] = memberDAO.addMember("fName0", "lName0", "0001", "email0"); //Member 7
+        member[7] = memberDAO.addMember("fName0", "lName0", "0001", "email0"); //Member 8
+        member[8] = memberDAO.addMember("fName0", "lName0", "0001", "email0"); //Member 9
+        book[15] = bookDAO.addBook("author5", "title15", "callNo16");
+        book[16] = bookDAO.addBook("author5", "title15", "callNo17");
+        book[17] = bookDAO.addBook("author5", "title15", "callNo18");
+        book[18] = bookDAO.addBook("author5", "title15", "callNo19");
+        book[19] = bookDAO.addBook("author5", "title15", "callNo20");
+        book[20] = bookDAO.addBook("author5", "title15", "callNo21");
+        book[21] = bookDAO.addBook("author5", "title15", "callNo22");
     }
 }
