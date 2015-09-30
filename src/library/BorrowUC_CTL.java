@@ -64,6 +64,12 @@ public class BorrowUC_CTL implements ICardReaderListener,
             loanList = new ArrayList<>();
             bookList = new ArrayList<>();
     }
+    
+    /* Method added to allow for dependency injection. */
+    public void overrideUI(BorrowUC_UI overrideUI)
+    {
+        this.ui = overrideUI;
+    }
 
     public void initialise() 
     {

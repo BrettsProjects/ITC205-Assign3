@@ -5,59 +5,49 @@
  */
 package library;
 
+import java.util.Calendar;
+import java.util.Date;
 import library.daos.BookDAO;
+import library.daos.BookHelper;
+import library.daos.LoanHelper;
 import library.daos.LoanMapDAO;
+import library.daos.MemberHelper;
 import library.daos.MemberMapDAO;
-import library.entities.Member;
-import library.hardware.StubCardReader;
-import library.hardware.StubDisplay;
-import library.hardware.StubPrinter;
-import library.hardware.StubScanner;
+import library.hardware.CardReader;
+import library.hardware.Display;
+import library.hardware.Printer;
+import library.hardware.Scanner;
 import library.interfaces.EBorrowState;
-
 import library.interfaces.daos.IBookDAO;
 import library.interfaces.daos.ILoanDAO;
 import library.interfaces.daos.IMemberDAO;
-import library.interfaces.entities.EBookState;
 import library.interfaces.entities.IBook;
 import library.interfaces.entities.ILoan;
 import library.interfaces.entities.IMember;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  *
  * @author Brett.Smith
  */
-public class BorrowUC_CTLTest {
-    /* Stubs */
-    private StubDisplay display;
-    private StubCardReader reader;
-    private StubScanner scanner;
-    private StubPrinter printer;
+public class BorrowUC_CTLHighLevelIT {
     
-    /* Mockito Mocks */
-    private IMember member10, member11, member12, member13, member14, member15;
+    public BorrowUC_CTLHighLevelIT() {
+    }
+    private Display display;
+    private CardReader reader;
+    private Scanner scanner;
+    private Printer printer;
     private IBookDAO bookDAO;
     private ILoanDAO loanDAO;
     private IMemberDAO memberDAO;
-    private IBook book10, book9, book8, book7, book6, book5;
-    private ILoan loan;
-    
-    public BorrowUC_CTLTest() {
-    }
+    private IBook[] book;
+    private IMember[] member;
     
     @BeforeClass
     public static void setUpClass() {
@@ -69,99 +59,101 @@ public class BorrowUC_CTLTest {
     
     @Before
     public void setUp() {
-        /* Stubs */
-        display = new StubDisplay();
-        reader = new StubCardReader();
-        printer = new StubPrinter();
-        scanner = new StubScanner();
+        reader = new CardReader();
+        scanner = new Scanner();
+        printer = new Printer();
+        display = new Display();
         
-        /* Mockito Mocks */
-        bookDAO = mock(BookDAO.class);
-        loanDAO = mock(LoanMapDAO.class);
-        memberDAO = mock(MemberMapDAO.class);
-        book10 = mock(IBook.class);
-        loan = mock(ILoan.class);
-        book9 = mock(IBook.class);
-        book8 = mock(IBook.class);
-        book7 = mock(IBook.class);
-        book6 = mock(IBook.class);
-        book5 = mock(IBook.class);
-        
-        /* Setup for Book, BookDAO */
-        when(bookDAO.getBookByID(10)).thenReturn(book10);
-        when(bookDAO.getBookByID(9)).thenReturn(book9);
-        when(bookDAO.getBookByID(8)).thenReturn(book8);
-        when(bookDAO.getBookByID(7)).thenReturn(book7);
-        when(bookDAO.getBookByID(6)).thenReturn(book6);
-        when(bookDAO.getBookByID(5)).thenReturn(book5);
-        when(bookDAO.getBookByID(4)).thenReturn(null);
-        
-        when(book10.getState()).thenReturn(EBookState.AVAILABLE);
-        when(book10.getAuthor()).thenReturn("Author");
-        when(book10.getCallNumber()).thenReturn("CallNum");
-        when(book10.getTitle()).thenReturn("Title");
-        when(book10.getID()).thenReturn(10);
-        
-        when(book9.getState()).thenReturn(EBookState.ON_LOAN);
-        when(book9.getAuthor()).thenReturn("Author");
-        when(book9.getCallNumber()).thenReturn("CallNum");
-        when(book9.getTitle()).thenReturn("Title");
-        when(book9.getID()).thenReturn(9);
-        
-        when(book8.getState()).thenReturn(EBookState.AVAILABLE);
-        when(book8.getAuthor()).thenReturn("Author");
-        when(book8.getCallNumber()).thenReturn("CallNum");
-        when(book8.getTitle()).thenReturn("Title");
-        when(book8.getID()).thenReturn(8);
-        
-        when(book7.getState()).thenReturn(EBookState.AVAILABLE);
-        when(book7.getAuthor()).thenReturn("Author");
-        when(book7.getCallNumber()).thenReturn("CallNum");
-        when(book7.getTitle()).thenReturn("Title");
-        when(book7.getID()).thenReturn(7);
-        
-        when(book6.getState()).thenReturn(EBookState.AVAILABLE);
-        when(book6.getAuthor()).thenReturn("Author");
-        when(book6.getCallNumber()).thenReturn("CallNum");
-        when(book6.getTitle()).thenReturn("Title");
-        when(book6.getID()).thenReturn(6);
-        
-        when(book5.getState()).thenReturn(EBookState.AVAILABLE);
-        when(book5.getAuthor()).thenReturn("Author");
-        when(book5.getCallNumber()).thenReturn("CallNum");
-        when(book5.getTitle()).thenReturn("Title");
-        when(book5.getID()).thenReturn(5);
-        
-        /* Setup for Loan, LoanDAO */
-        when(loanDAO.createLoan(any(), any())).thenReturn(loan);
-        when(loan.toString()).thenReturn("FakeLoan");
-        /* Setup for Members */
-        member10 = mock(Member.class);
-        member11 = mock(Member.class);
-        member12 = mock(Member.class);
-        member13 = mock(Member.class);
-        member14 = mock(Member.class);
-        member15 = mock(Member.class);
-        
-        when(memberDAO.getMemberByID(0)).thenReturn(null);
-        when(memberDAO.getMemberByID(10)).thenReturn(member10);
-        when(memberDAO.getMemberByID(15)).thenReturn(member15);
-        when(memberDAO.getMemberByID(14)).thenReturn(member14);
-        when(memberDAO.getMemberByID(13)).thenReturn(member13);
-        when(memberDAO.getMemberByID(12)).thenReturn(member12);
-        when(memberDAO.getMemberByID(11)).thenReturn(member11);
-        when(memberDAO.getMemberByID(10)).thenReturn(member10);
-        
-        when(member15.hasReachedLoanLimit()).thenReturn(true);
-        when(member14.hasReachedFineLimit()).thenReturn(true);
-        when(member13.hasOverDueLoans()).thenReturn(true);
-        when(member11.hasFinesPayable()).thenReturn(true);
-        when(member10.hasOverDueLoans()).thenReturn(false);
-        when(member10.hasReachedFineLimit()).thenReturn(false);
-        when(member10.hasReachedLoanLimit()).thenReturn(false);
-        
+        bookDAO = new BookDAO(new BookHelper());
+        loanDAO = new LoanMapDAO(new LoanHelper());
+        memberDAO = new MemberMapDAO(new MemberHelper());
+        setupTestData();
+        setupAdditionalTestData();
     }
     
+    private void setupTestData() {
+        reader = new CardReader();
+        scanner = new Scanner();
+        printer = new Printer();
+        display = new Display();
+        
+        bookDAO = new BookDAO(new BookHelper());
+        loanDAO = new LoanMapDAO(new LoanHelper());
+        memberDAO = new MemberMapDAO(new MemberHelper());
+        
+        book = new IBook[21];
+        member = new IMember[8];
+
+        book[0]  = bookDAO.addBook("author1", "title1", "callNo1");
+        book[1]  = bookDAO.addBook("author1", "title2", "callNo2");
+        book[2]  = bookDAO.addBook("author1", "title3", "callNo3");
+        book[3]  = bookDAO.addBook("author1", "title4", "callNo4");
+        book[4]  = bookDAO.addBook("author2", "title5", "callNo5");
+        book[5]  = bookDAO.addBook("author2", "title6", "callNo6");
+        book[6]  = bookDAO.addBook("author2", "title7", "callNo7");
+        book[7]  = bookDAO.addBook("author2", "title8", "callNo8");
+        book[8]  = bookDAO.addBook("author3", "title9", "callNo9");
+        book[9]  = bookDAO.addBook("author3", "title10", "callNo10");
+        book[10] = bookDAO.addBook("author4", "title11", "callNo11");
+        book[11] = bookDAO.addBook("author4", "title12", "callNo12");
+        book[12] = bookDAO.addBook("author5", "title13", "callNo13");
+        book[13] = bookDAO.addBook("author5", "title14", "callNo14");
+        book[14] = bookDAO.addBook("author5", "title15", "callNo15");
+
+        member[0] = memberDAO.addMember("fName0", "lName0", "0001", "email0");
+        member[1] = memberDAO.addMember("fName1", "lName1", "0002", "email1");
+        member[2] = memberDAO.addMember("fName2", "lName2", "0003", "email2");
+        member[3] = memberDAO.addMember("fName3", "lName3", "0004", "email3");
+        member[4] = memberDAO.addMember("fName4", "lName4", "0005", "email4");
+        member[5] = memberDAO.addMember("fName5", "lName5", "0006", "email5");
+
+        Calendar cal = Calendar.getInstance();
+        Date now = cal.getTime();
+
+        //create a member with overdue loans		
+        for (int i=0; i<2; i++) {
+                ILoan loan = loanDAO.createLoan(member[1], book[i]);
+                loanDAO.commitLoan(loan);
+        }
+        cal.setTime(now);
+        cal.add(Calendar.DATE, ILoan.LOAN_PERIOD + 1);
+        Date checkDate = cal.getTime();		
+        loanDAO.updateOverDueStatus(checkDate);
+
+        //create a member with maxed out unpaid fines
+        member[2].addFine(10.0f);
+
+        //create a member with maxed out loans
+        for (int i=2; i<7; i++) {
+                ILoan loan = loanDAO.createLoan(member[3], book[i]);
+                loanDAO.commitLoan(loan);
+        }
+
+        //a member with a fine, but not over the limit
+        member[4].addFine(5.0f);
+
+        //a member with a couple of loans but not over the limit
+        for (int i=7; i<9; i++) {
+                ILoan loan = loanDAO.createLoan(member[5], book[i]);
+                loanDAO.commitLoan(loan);
+        }
+    }
+    
+    private void setupAdditionalTestData()
+    {      
+        member[6] = memberDAO.addMember("fName0", "lName0", "0001", "email0"); //Member 7
+        member[7] = memberDAO.addMember("fName0", "lName0", "0001", "email0"); //Member 8
+        member[8] = memberDAO.addMember("fName0", "lName0", "0001", "email0"); //Member 9
+        book[15] = bookDAO.addBook("author5", "title15", "callNo16");
+        book[16] = bookDAO.addBook("author5", "title15", "callNo17");
+        book[17] = bookDAO.addBook("author5", "title15", "callNo18");
+        book[18] = bookDAO.addBook("author5", "title15", "callNo19");
+        book[19] = bookDAO.addBook("author5", "title15", "callNo20");
+        book[20] = bookDAO.addBook("author5", "title15", "callNo21");
+        book[21] = bookDAO.addBook("author5", "title15", "callNo22");
+    }
+    
+        
     @After
     public void tearDown() {
     }
@@ -177,26 +169,21 @@ public class BorrowUC_CTLTest {
                 display, bookDAO, loanDAO, memberDAO);
         
         assertTrue(instance.getState().equals(EBorrowState.CREATED));
-        
         instance.initialise();
-        
         assertTrue(instance.getState().equals(EBorrowState.INITIALIZED));
-        assertTrue(display.getId().equals("Borrow UI"));
-        assertTrue(reader.getEnabled());
-        assertTrue(!scanner.getEnabled());
     }
 
     /**
-     * Test ensures that unrestricted members get unrestricted service.
+     * Test ensures that unrestricted members get unrestricted service. Member
+     * has not borrowed and doesnt have fines.
      */
     @Test
     public void testCardSwipedUnrestrictedMember1() {
-        int memberID = 10;
+        int memberID = 1;
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
-                display, bookDAO, loanDAO, memberDAO);
+            display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
         instance.cardSwiped(memberID);
-        assertTrue(scanner.getEnabled());
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
     }
     
@@ -206,12 +193,11 @@ public class BorrowUC_CTLTest {
      */
     @Test
     public void testCardSwipedUnrestrictedMember2() {
-        int memberID = 11;
+        int memberID = 5;
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
         instance.cardSwiped(memberID);
-        assertTrue(scanner.getEnabled());
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
     }
     
@@ -221,12 +207,11 @@ public class BorrowUC_CTLTest {
      */
     @Test
     public void testCardSwipedUnrestrictedMember3() {
-        int memberID = 12;
+        int memberID = 6;
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
         instance.cardSwiped(memberID);
-        assertTrue(scanner.getEnabled());
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
     }
     
@@ -238,12 +223,11 @@ public class BorrowUC_CTLTest {
      */
     @Test
     public void testCardSwipedRestrictedMember1() {
-        int memberID = 15;
+        int memberID = 4;
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
         instance.cardSwiped(memberID);
-        verify(member15, times(1)).hasReachedLoanLimit();
         assertTrue(instance.getState().equals(EBorrowState.BORROWING_RESTRICTED));
     }
     
@@ -255,29 +239,26 @@ public class BorrowUC_CTLTest {
      */
     @Test
     public void testCardSwipedRestrictedMember2() {
-        int memberID = 13;
+        int memberID = 2;
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
         instance.cardSwiped(memberID);
-        verify(member13, times(1)).hasOverDueLoans();
         assertTrue(instance.getState().equals(EBorrowState.BORROWING_RESTRICTED));
     }
     
         /**
      * Tests that a member who is restricted, becomes restricted in the system.
      * 
-     * This one tests that a borrower who has over due loans is
-     * restricted.
+     * This one tests that a borrower who has over fine limit is restricted.
      */
     @Test
     public void testCardSwipedRestrictedMember3() {
-        int memberID = 14;
+        int memberID = 3;
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
         instance.cardSwiped(memberID);
-        verify(member14, times(1)).hasReachedFineLimit();
         assertTrue(instance.getState().equals(EBorrowState.BORROWING_RESTRICTED));
     }
     
@@ -292,7 +273,6 @@ public class BorrowUC_CTLTest {
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
         instance.cardSwiped(memberID);
-        verify(memberDAO, times(1)).getMemberByID(memberID);
         assertTrue(instance.getBorrower() == null);
     }
     /**
@@ -314,6 +294,7 @@ public class BorrowUC_CTLTest {
     public void testCancelled() {
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
+        instance.initialise();
         instance.cancelled();
         assertTrue(instance.getState().equals(EBorrowState.CANCELLED));
     }
@@ -326,13 +307,12 @@ public class BorrowUC_CTLTest {
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
-        instance.cardSwiped(10);
+        instance.cardSwiped(7);
         instance.bookScanned(10);
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
         instance.scansCompleted();
+        System.out.println(instance.getScanCount());
         assertTrue(instance.getState().equals(EBorrowState.CONFIRMING_LOANS));
-        assertFalse(reader.getEnabled());
-        assertFalse(scanner.getEnabled());
     }
     
     /**
@@ -345,11 +325,9 @@ public class BorrowUC_CTLTest {
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
-        instance.cardSwiped(10);
+        instance.cardSwiped(7);
         instance.scansCompleted();
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
-        assertFalse(reader.getEnabled());
-        assertTrue(scanner.getEnabled());
     }
     
     /**
@@ -373,16 +351,12 @@ public class BorrowUC_CTLTest {
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
-        instance.cardSwiped(10);
+        instance.cardSwiped(8);
         instance.bookScanned(10);
         instance.scansCompleted();
         assertTrue(instance.getState().equals(EBorrowState.CONFIRMING_LOANS));
         instance.loansConfirmed();
         assertTrue(instance.getState().equals(EBorrowState.COMPLETED));
-        assertFalse(reader.getEnabled());
-        assertFalse(scanner.getEnabled());
-        assertTrue(printer.getPrintData() != null);
-        verify(loanDAO).commitLoan(any());
     }
     
     /**
@@ -406,14 +380,12 @@ public class BorrowUC_CTLTest {
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
-        instance.cardSwiped(10);
-        instance.bookScanned(10);
+        instance.cardSwiped(8);
+        instance.bookScanned(11);
         instance.scansCompleted();
         assertTrue(instance.getState().equals(EBorrowState.CONFIRMING_LOANS));
         instance.loansRejected();
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
-        assertFalse(reader.getEnabled());
-        assertTrue(scanner.getEnabled());
         assertTrue(instance.getScanCount() == 0);
         assertTrue(instance.getPendingLoans().size() == 0);
     }
@@ -428,10 +400,10 @@ public class BorrowUC_CTLTest {
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
-        instance.cardSwiped(10);
+        instance.cardSwiped(9);
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
         assertTrue(instance.getScanCount() == 0);
-        instance.bookScanned(10);
+        instance.bookScanned(12);
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
         assertTrue(instance.getScanCount() == 1);
     }
@@ -460,10 +432,10 @@ public class BorrowUC_CTLTest {
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
-        instance.cardSwiped(10);
+        instance.cardSwiped(9);
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
         assertTrue(instance.getScanCount() == 0);
-        instance.bookScanned(9);
+        instance.bookScanned(3);
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
         assertTrue(instance.getScanCount() == 0);
     }
@@ -478,10 +450,10 @@ public class BorrowUC_CTLTest {
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
-        instance.cardSwiped(10);
+        instance.cardSwiped(9);
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
         assertTrue(instance.getScanCount() == 0);
-        instance.bookScanned(4);
+        instance.bookScanned(25);
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
         assertTrue(instance.getScanCount() == 0);
     }
@@ -496,7 +468,7 @@ public class BorrowUC_CTLTest {
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
-        instance.cardSwiped(10);
+        instance.cardSwiped(9);
         instance.bookScanned(10);
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
         assertTrue(instance.getScanCount() == 1);
@@ -516,21 +488,184 @@ public class BorrowUC_CTLTest {
         BorrowUC_CTL instance = new BorrowUC_CTL(reader, scanner, printer,
                 display, bookDAO, loanDAO, memberDAO);
         instance.initialise();
-        instance.cardSwiped(10);
-        instance.bookScanned(10);
+        instance.cardSwiped(9);
+        instance.bookScanned(16);
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
         assertTrue(instance.getScanCount() == 1);
-        instance.bookScanned(8);
+        instance.bookScanned(17);
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
         assertTrue(instance.getScanCount() == 2);
-        instance.bookScanned(7);
+        instance.bookScanned(18);
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
         assertTrue(instance.getScanCount() == 3);
-        instance.bookScanned(6);
+        instance.bookScanned(19);
         assertTrue(instance.getState().equals(EBorrowState.SCANNING_BOOKS));
         assertTrue(instance.getScanCount() == 4);
-        instance.bookScanned(5);
+        instance.bookScanned(20);
         assertTrue(instance.getState().equals(EBorrowState.CONFIRMING_LOANS));
         assertTrue(instance.getScanCount() == 5);
+    }
+    
+    /**
+     * A borrower who is a valid, unrestricted borrower wishes to borrow 1 
+     * or more books, with an upper limit of no more than 5 books on loan 
+     * at any one time.
+     */
+    @Test
+    private void runBorrowTest001()
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(7);
+        ctrl.bookScanned(16);
+        ctrl.scansCompleted();
+        ctrl.loansConfirmed();
+    }
+    
+    /**
+     * A borrower who is a valid, unrestricted borrower wishes to borrow the
+     * maximum number of books and has not borrowed before.
+     */
+    @Test
+    private void runBorrowTest002()
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(8);
+        ctrl.bookScanned(17);
+        ctrl.bookScanned(18);
+        ctrl.bookScanned(19);
+        ctrl.bookScanned(20);
+        ctrl.bookScanned(21);
+        ctrl.scansCompleted();
+        ctrl.loansConfirmed();
+    }
+    
+    /**
+     * A borrower who is a valid, unrestricted borrower wishes to borrow 1 or 
+     * more books, with an upper limit of no more than 5 books on loan at any
+     * one time is going to borrow 5 books.
+     */
+    @Test
+    private void runBorrowTest003()
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(7);
+        ctrl.bookScanned(10);
+        ctrl.bookScanned(11);
+        ctrl.bookScanned(12);
+        ctrl.bookScanned(13);
+        ctrl.scansCompleted();
+        ctrl.loansConfirmed();
+    }    
+    
+    /**
+     * A borrower who is a valid, unrestricted borrower wishes to borrow 1 or 
+     * more books, with an upper limit of no more than 5 books on loan at any 
+     * one time who has already got books on loan is going to borrow more books,
+     * but the total number of books will be less than 5.
+     */
+    @Test
+    private void runBorrowTest004()
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(6);
+        ctrl.bookScanned(14);
+        ctrl.scansCompleted();
+        ctrl.loansConfirmed();
+    }    
+    
+    /**
+     * A borrower who is valid, unrestricted borrower wishes to borrow 1 or 
+     * more books and presently has a fine.
+     */
+    @Test
+    private void runBorrowTest005()
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(5);
+        ctrl.bookScanned(15);
+        ctrl.scansCompleted();
+        ctrl.loansConfirmed();
+        ctrl.loansConfirmed();
+    }    
+    
+    /**
+     * A borrower who is valid, but restricted because they are over the loan
+     * limit attempts to borrow a book.
+     */
+    @Test
+    private void runBorrowTest006()
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(4);
+        ctrl.cancelled();
+    }    
+    
+    /**
+     * A borrower who is valid, but restricted because they have over due loans
+     * attempts to borrow a book.
+     */
+    @Test
+    private void runBorrowTest007()
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(2);
+        ctrl.cancelled();
+    }    
+    
+    /**
+     * A borrower who is valid, but restricted because they have reached the 
+     * fine limit attempts to borrow a book.
+     */
+    @Test
+    private void runBorrowTest008()
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(3);
+        ctrl.cancelled();
+    }    
+    
+    /**
+     * A borrower who is attempting to borrow books rejects the loan list.
+     */
+    @Test
+    private void runBorrowTest009()
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(1);
+        ctrl.bookScanned(22);
+        ctrl.scansCompleted();
+        ctrl.loansRejected();
+    }    
+    
+    /**
+     * A borrower who is attempting to borrow books cancels.
+     */
+    @Test
+    private void runBorrowTest010()
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.initialise();
+        ctrl.cardSwiped(1);
+        ctrl.bookScanned(22);
+        ctrl.cancelled();
     }
 }
