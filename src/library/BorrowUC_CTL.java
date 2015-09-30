@@ -104,7 +104,6 @@ public class BorrowUC_CTL implements ICardReaderListener,
                     || borrower.hasReachedLoanLimit())
             {
                 setState(state.BORROWING_RESTRICTED);
-                ui.setState(state.BORROWING_RESTRICTED);
 
                 // Display member details
                 displayMemberDetails();
@@ -127,7 +126,6 @@ public class BorrowUC_CTL implements ICardReaderListener,
             else
             {
                 setState(state.SCANNING_BOOKS);
-                ui.setState(state.SCANNING_BOOKS);
 
                 // Display member details
                 displayMemberDetails();
@@ -244,6 +242,7 @@ public class BorrowUC_CTL implements ICardReaderListener,
                 if (scanCount == 5)
                 {
                     setState(EBorrowState.CONFIRMING_LOANS);
+                    ui.displayConfirmingLoan(getLoansDetail());
                 }
                 else if (scanCount > 5)
                 {

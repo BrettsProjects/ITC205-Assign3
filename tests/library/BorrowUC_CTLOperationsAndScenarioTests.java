@@ -7,6 +7,7 @@ package library;
 
 import java.util.Calendar;
 import java.util.Date;
+import javax.swing.JPanel;
 import library.daos.BookDAO;
 import library.daos.BookHelper;
 import library.daos.LoanHelper;
@@ -17,6 +18,7 @@ import library.hardware.CardReader;
 import library.hardware.Display;
 import library.hardware.Printer;
 import library.hardware.Scanner;
+import library.hardware.StubDisplay;
 import library.interfaces.EBorrowState;
 import library.interfaces.daos.IBookDAO;
 import library.interfaces.daos.ILoanDAO;
@@ -24,22 +26,31 @@ import library.interfaces.daos.IMemberDAO;
 import library.interfaces.entities.IBook;
 import library.interfaces.entities.ILoan;
 import library.interfaces.entities.IMember;
+import library.interfaces.hardware.IDisplay;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyFloat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  *
  * @author Brett.Smith
  */
-public class BorrowUC_CTLHighLevelIT {
+public class BorrowUC_CTLOperationsAndScenarioTests {
     
-    public BorrowUC_CTLHighLevelIT() {
+    public BorrowUC_CTLOperationsAndScenarioTests() {
     }
     private Display display;
+    private StubDisplay stubDisplay;
     private CardReader reader;
     private Scanner scanner;
     private Printer printer;
@@ -48,6 +59,7 @@ public class BorrowUC_CTLHighLevelIT {
     private IMemberDAO memberDAO;
     private IBook[] book;
     private IMember[] member;
+    private BorrowUC_UI mockUi;
     
     @BeforeClass
     public static void setUpClass() {
@@ -69,6 +81,14 @@ public class BorrowUC_CTLHighLevelIT {
         memberDAO = new MemberMapDAO(new MemberHelper());
         setupTestData();
         setupAdditionalTestData();
+        setupMockUi();
+    }
+    
+    private void setupMockUi()
+    {
+        // Need to use the StubDisplay class again.
+        mockUi = mock(BorrowUC_UI.class);
+        stubDisplay = new StubDisplay();
     }
     
     private void setupTestData() {
@@ -81,8 +101,8 @@ public class BorrowUC_CTLHighLevelIT {
         loanDAO = new LoanMapDAO(new LoanHelper());
         memberDAO = new MemberMapDAO(new MemberHelper());
         
-        book = new IBook[21];
-        member = new IMember[8];
+        book = new IBook[22];
+        member = new IMember[9];
 
         book[0]  = bookDAO.addBook("author1", "title1", "callNo1");
         book[1]  = bookDAO.addBook("author1", "title2", "callNo2");
@@ -512,15 +532,24 @@ public class BorrowUC_CTLHighLevelIT {
      * at any one time.
      */
     @Test
-    private void runBorrowTest001()
+    public void runBorrowTest001()
     {
-        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, stubDisplay, 
 				 bookDAO, loanDAO, memberDAO);
+        ctrl.overrideUI(mockUi);
         ctrl.initialise();
+        verify(mockUi).setState(EBorrowState.INITIALIZED);
         ctrl.cardSwiped(7);
+        verify(mockUi).setState(EBorrowState.SCANNING_BOOKS);
         ctrl.bookScanned(16);
+        verify(mockUi).displayScannedBookDetails(anyString());
+        verify(mockUi).displayPendingLoan(anyString());
         ctrl.scansCompleted();
+        verify(mockUi).setState(EBorrowState.CONFIRMING_LOANS);
+        verify(mockUi).displayConfirmingLoan(anyString());
         ctrl.loansConfirmed();
+        verify(mockUi).setState(EBorrowState.COMPLETED);
+        
     }
     
     /**
@@ -528,18 +557,23 @@ public class BorrowUC_CTLHighLevelIT {
      * maximum number of books and has not borrowed before.
      */
     @Test
-    private void runBorrowTest002()
+    public void runBorrowTest002()
     {
-        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, stubDisplay, 
 				 bookDAO, loanDAO, memberDAO);
+        ctrl.overrideUI(mockUi);
         ctrl.initialise();
+        verify(mockUi).setState(EBorrowState.INITIALIZED);
         ctrl.cardSwiped(8);
+        verify(mockUi).setState(EBorrowState.SCANNING_BOOKS);
         ctrl.bookScanned(17);
         ctrl.bookScanned(18);
         ctrl.bookScanned(19);
         ctrl.bookScanned(20);
         ctrl.bookScanned(21);
-        ctrl.scansCompleted();
+        verify(mockUi, times(5)).displayScannedBookDetails(anyString());
+        verify(mockUi, times(5)).displayPendingLoan(anyString());
+        verify(mockUi).displayConfirmingLoan(anyString());
         ctrl.loansConfirmed();
     }
     
@@ -549,17 +583,22 @@ public class BorrowUC_CTLHighLevelIT {
      * one time is going to borrow 5 books.
      */
     @Test
-    private void runBorrowTest003()
+    public void runBorrowTest003()
     {
-        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, stubDisplay, 
 				 bookDAO, loanDAO, memberDAO);
+        ctrl.overrideUI(mockUi);
         ctrl.initialise();
         ctrl.cardSwiped(7);
+        verify(mockUi).setState(EBorrowState.SCANNING_BOOKS);
         ctrl.bookScanned(10);
         ctrl.bookScanned(11);
         ctrl.bookScanned(12);
         ctrl.bookScanned(13);
         ctrl.scansCompleted();
+        verify(mockUi, times(4)).displayScannedBookDetails(anyString());
+        verify(mockUi, times(4)).displayPendingLoan(anyString());
+        verify(mockUi).displayConfirmingLoan(anyString());
         ctrl.loansConfirmed();
     }    
     
@@ -570,14 +609,19 @@ public class BorrowUC_CTLHighLevelIT {
      * but the total number of books will be less than 5.
      */
     @Test
-    private void runBorrowTest004()
+    public void runBorrowTest004()
     {
-        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, stubDisplay, 
 				 bookDAO, loanDAO, memberDAO);
+        ctrl.overrideUI(mockUi);
         ctrl.initialise();
         ctrl.cardSwiped(6);
+        verify(mockUi).setState(EBorrowState.SCANNING_BOOKS);
         ctrl.bookScanned(14);
+        verify(mockUi, times(1)).displayScannedBookDetails(anyString());
+        verify(mockUi, times(1)).displayPendingLoan(anyString());
         ctrl.scansCompleted();
+        verify(mockUi).displayConfirmingLoan(anyString());
         ctrl.loansConfirmed();
     }    
     
@@ -586,15 +630,20 @@ public class BorrowUC_CTLHighLevelIT {
      * more books and presently has a fine.
      */
     @Test
-    private void runBorrowTest005()
+    public void runBorrowTest005()
     {
-        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, stubDisplay, 
 				 bookDAO, loanDAO, memberDAO);
+        ctrl.overrideUI(mockUi);
         ctrl.initialise();
         ctrl.cardSwiped(5);
+        verify(mockUi).setState(EBorrowState.SCANNING_BOOKS);
+        verify(mockUi).displayOutstandingFineMessage(anyFloat());
         ctrl.bookScanned(15);
+        verify(mockUi, times(1)).displayScannedBookDetails(anyString());
+        verify(mockUi, times(1)).displayPendingLoan(anyString());
         ctrl.scansCompleted();
-        ctrl.loansConfirmed();
+        verify(mockUi).displayConfirmingLoan(anyString());
         ctrl.loansConfirmed();
     }    
     
@@ -603,13 +652,16 @@ public class BorrowUC_CTLHighLevelIT {
      * limit attempts to borrow a book.
      */
     @Test
-    private void runBorrowTest006()
+    public void runBorrowTest006()
     {
-        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, stubDisplay, 
 				 bookDAO, loanDAO, memberDAO);
+        ctrl.overrideUI(mockUi);
         ctrl.initialise();
         ctrl.cardSwiped(4);
+        verify(mockUi).setState(EBorrowState.BORROWING_RESTRICTED);
         ctrl.cancelled();
+        verify(mockUi).setState(EBorrowState.CANCELLED);
     }    
     
     /**
@@ -617,13 +669,16 @@ public class BorrowUC_CTLHighLevelIT {
      * attempts to borrow a book.
      */
     @Test
-    private void runBorrowTest007()
+    public void runBorrowTest007()
     {
-        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, stubDisplay, 
 				 bookDAO, loanDAO, memberDAO);
+        ctrl.overrideUI(mockUi);
         ctrl.initialise();
         ctrl.cardSwiped(2);
+        verify(mockUi).setState(EBorrowState.BORROWING_RESTRICTED);
         ctrl.cancelled();
+        verify(mockUi).setState(EBorrowState.CANCELLED);
     }    
     
     /**
@@ -631,41 +686,59 @@ public class BorrowUC_CTLHighLevelIT {
      * fine limit attempts to borrow a book.
      */
     @Test
-    private void runBorrowTest008()
+    public void runBorrowTest008()
     {
-        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, stubDisplay, 
 				 bookDAO, loanDAO, memberDAO);
+        ctrl.overrideUI(mockUi);
         ctrl.initialise();
         ctrl.cardSwiped(3);
+        verify(mockUi).setState(EBorrowState.BORROWING_RESTRICTED);
         ctrl.cancelled();
+        verify(mockUi).setState(EBorrowState.CANCELLED);
     }    
     
     /**
      * A borrower who is attempting to borrow books rejects the loan list.
      */
     @Test
-    private void runBorrowTest009()
+    public void runBorrowTest009()
     {
-        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, stubDisplay, 
 				 bookDAO, loanDAO, memberDAO);
+        ctrl.overrideUI(mockUi);
         ctrl.initialise();
         ctrl.cardSwiped(1);
         ctrl.bookScanned(22);
+        verify(mockUi, times(1)).displayScannedBookDetails(anyString());
+        verify(mockUi, times(1)).displayPendingLoan(anyString());
         ctrl.scansCompleted();
+        verify(mockUi).displayConfirmingLoan(anyString());
         ctrl.loansRejected();
+        verify(mockUi, times(2)).setState(EBorrowState.SCANNING_BOOKS);
     }    
     
     /**
      * A borrower who is attempting to borrow books cancels.
      */
     @Test
-    private void runBorrowTest010()
+    public void runBorrowTest010()
     {
-        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, display, 
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, stubDisplay, 
 				 bookDAO, loanDAO, memberDAO);
+        ctrl.overrideUI(mockUi);
         ctrl.initialise();
         ctrl.cardSwiped(1);
         ctrl.bookScanned(22);
+        verify(mockUi, times(1)).displayScannedBookDetails(anyString());
+        verify(mockUi, times(1)).displayPendingLoan(anyString());
         ctrl.cancelled();
+        verify(mockUi).setState(EBorrowState.CANCELLED);
+    }
+    
+    @Test
+    public void runBorrowTest011()
+    {
+        
     }
 }

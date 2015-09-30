@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Brett.Smith
  */
-public class BorrowUC_CTLLowLevelIT {
+public class BorrowUC_CTLUnitTests {
     /* Stubs */
     private StubDisplay display;
     private StubCardReader reader;
@@ -56,7 +56,7 @@ public class BorrowUC_CTLLowLevelIT {
     private IBook book10, book9, book8, book7, book6, book5;
     private ILoan loan;
     
-    public BorrowUC_CTLLowLevelIT() {
+    public BorrowUC_CTLUnitTests() {
     }
     
     @BeforeClass
