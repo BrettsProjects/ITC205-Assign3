@@ -735,10 +735,66 @@ public class BorrowUC_CTLOperationsAndScenarioTests {
         ctrl.cancelled();
         verify(mockUi).setState(EBorrowState.CANCELLED);
     }
-    
+    /**
+     * A user scans a book that isnt available (one that someone else has 
+     * already borrowed, a book which is damaged, etc).
+     */
     @Test
     public void runBorrowTest011()
     {
-        
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, stubDisplay, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.overrideUI(mockUi);
+        ctrl.initialise();
+        ctrl.cardSwiped(1);
+        ctrl.bookScanned(5);
+        verify(mockUi).displayErrorMessage(anyString());
+    }
+    
+    /**
+     * A User scans a book barcode that deosnt exist (e.g. a book from another 
+     * library, manually types it in… etc)
+     */
+    @Test
+    public void runBorrowTest012()
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, stubDisplay, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.overrideUI(mockUi);
+        ctrl.initialise();
+        ctrl.cardSwiped(1);
+        ctrl.bookScanned(50);
+        verify(mockUi).displayErrorMessage(anyString());
+    }
+    
+    /**
+     * User exists and is unrestricted, scanning books for borrowing and scans 
+     * same book twice.
+     */
+    @Test
+    public void runBorrowTest013()
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, stubDisplay, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.overrideUI(mockUi);
+        ctrl.initialise();
+        ctrl.cardSwiped(1);
+        ctrl.bookScanned(22);
+        ctrl.bookScanned(22);
+        verify(mockUi).displayErrorMessage(anyString());
+    }
+    
+    /**
+     * A system user swipes a card of a non-existant borrower.
+     */
+    @Test
+    public void runBorrowTest014()
+    {
+        BorrowUC_CTL ctrl = new BorrowUC_CTL(reader, scanner, printer, stubDisplay, 
+				 bookDAO, loanDAO, memberDAO);
+        ctrl.overrideUI(mockUi);
+        ctrl.initialise();
+        ctrl.cardSwiped(100);
+        verify(mockUi).displayErrorMessage(anyString());
     }
 }
