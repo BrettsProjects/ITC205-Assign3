@@ -65,9 +65,11 @@ public class BorrowUC_UI extends JPanel implements IBorrowUI {
 			break;
 
  		case COMPLETED:
+                        cl.show(this, state.toString());
 			break;
 			
 		case CANCELLED:
+                        cl.show(this, state.toString());
 			break;
 			
 		default:

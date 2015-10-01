@@ -189,12 +189,18 @@ public class BorrowUC_CTL implements ICardReaderListener,
 
     private void displayOverDueMessage()
     {
-        ui.displayOverDueMessage();
+        if (borrower.hasOverDueLoans())
+        {
+            ui.displayOverDueMessage();
+        }
     }
 
     private void displayAtLoanLimitMessage()
     {
-        ui.displayAtLoanLimitMessage();
+        if (borrower.hasReachedLoanLimit())
+        {
+            ui.displayAtLoanLimitMessage();
+        }
     }
 
     private void displayBorrowingRestrictedError()
@@ -328,7 +334,6 @@ public class BorrowUC_CTL implements ICardReaderListener,
                 }
                 setState(state.COMPLETED);
                 printer.print(getLoansDetail());
-                state = state.COMPLETED;
             }
             else
             {
@@ -413,10 +418,13 @@ public class BorrowUC_CTL implements ICardReaderListener,
             case COMPLETED:
                 reader.setEnabled(false);
                 scanner.setEnabled(false);
+                display.setDisplay(previous, "");
                 break;
 
             case CANCELLED:
-                // never used.
+                reader.setEnabled(false);
+                scanner.setEnabled(false);
+                display.setDisplay(previous, "");
                 break;
 
             default:
